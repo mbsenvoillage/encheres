@@ -11,6 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-  <a href="${pageContext.request.contextPath}/ServletConnecTest">test</a>
+  <a href="${pageContext.request.contextPath}/ServletLogin">test</a>
   </body>
 </html>
