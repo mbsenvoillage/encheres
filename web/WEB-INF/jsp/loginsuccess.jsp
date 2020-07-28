@@ -11,7 +11,13 @@
     <title>Login Success</title>
 </head>
 <body>
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+%>
 <p>${user.getUsername()} la connexion est réussie</p>
-
+<p>${user.isConnecte()}</p>
+<p><%= request.getAttribute("userID")%></p>
+<a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
+<a href="${pageContext.request.contextPath}/ServletLogin">Login page</a>
 </body>
 </html>

@@ -8,11 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ValidateLogin {
+public class ValidateLogin implements loginDAO{
 
     private static final String SELECT_USER_BY_ID = "select pseudo, mot_de_passe from utilisateurs where pseudo = ? and mot_de_passe = ?";
 
-    public static boolean checkID(loginBean login) throws BusinessException {
+    public loginBean checkID(loginBean login) throws BusinessException {
         boolean ok = false;
         // tente d'ouvrir une connection à la BDD
         try(Connection cnx = ConnectionWizard.getConnection()) {
@@ -42,6 +42,7 @@ public class ValidateLogin {
             bizEx.addError(CodesErreurDAL.ECHEC_VALIDATION_LOGIN);
             throw bizEx;
         }
-        return ok;
+        return login;
     }
+
 }
