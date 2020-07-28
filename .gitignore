@@ -1,0 +1,4 @@
+# Ignore files in out
+out/
+
+/web/META-INF/context.xml
