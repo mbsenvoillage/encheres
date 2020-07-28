@@ -25,12 +25,19 @@ public class ValidateLogin {
             ResultSet rs = stmt.executeQuery();
 
             // Assigne au booléen ok, la valeur rs.next() qui parcours le resultset
+
             ok = rs.next();
+
 
         } catch (SQLException throwables) {
 
             // Si erreur de lecture, on lève une erreur d'authentification et l'ajoute à une liste
             throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_VALIDATION_LOGIN);
+            throw bizEx;
+        }
+        if (!ok) {
             BusinessException bizEx = new BusinessException();
             bizEx.addError(CodesErreurDAL.ECHEC_VALIDATION_LOGIN);
             throw bizEx;

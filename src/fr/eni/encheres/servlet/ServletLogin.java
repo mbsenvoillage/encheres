@@ -17,15 +17,15 @@ import java.util.List;
 @WebServlet("/ServletLogin")
 public class ServletLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        loginBean login = new loginBean();
+        loginBean user = new loginBean();
         List<Integer> errorList = new ArrayList<>();
 
         // Assigne aux variables de la classe loginBean la valeur des params userID et password
-        login.setUsername(request.getParameter("userID"));
-        login.setPassword(request.getParameter("password"));
+        user.setUsername(request.getParameter("userID"));
+        user.setPassword(request.getParameter("password"));
 
         // Si ces champs sont vide, une erreur correspondante est ajoutée à la liste
-        if (login.getUsername().trim().isEmpty() || login.getPassword().trim().isEmpty()) {
+        if (user.getUsername().trim().isEmpty() || user.getPassword().trim().isEmpty()) {
             errorList.add(CodesErreurServlet.CHAMPS_VIDE_ERREUR);
         }
 
@@ -36,8 +36,8 @@ public class ServletLogin extends HttpServlet {
             rd.forward(request, response);
         } else {
             try {
-                ValidateLogin.checkID(login);
-                request.setAttribute("user", login);
+                ValidateLogin.checkID(user);
+                request.setAttribute("user", user);
                 RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/loginsuccess.jsp");
                 rd.forward(request, response);
             } catch (BusinessException e) {

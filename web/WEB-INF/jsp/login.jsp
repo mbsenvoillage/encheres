@@ -1,4 +1,5 @@
-<%@ page import="fr.eni.encheres.messages.LecteurMessage" %><%--
+<%@ page import="fr.eni.encheres.messages.LecteurMessage" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: yvonmomboisse
   Date: 28/07/2020
@@ -18,11 +19,18 @@
         <br>
         <label>Mot de passe : <input type="text" name="password"></label>
         <br>
-        <c:if test="${!empty errorList}">
-            <c:forEach var="element" items="errorList">
-                <p>${LecteurMessage.getErrorMessage(element)}</p>
-            </c:forEach>
-        </c:if>
+        <%
+            List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
+            if (errorList != null)
+            {
+                for (int code : errorList) {
+        %>
+        <p><%= LecteurMessage.getErrorMessage(code) %></p>
+        <br>
+        <%
+            }
+            }
+        %>
         <input type="submit" value="Connexion">
         <label for="rememberme">
             <input type="checkbox" name="rememberme" id="rememberme">
