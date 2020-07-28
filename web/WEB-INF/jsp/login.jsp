@@ -13,11 +13,14 @@
     <title>Login</title>
 </head>
 <body>
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+%>
 
     <form name="login" action="${pageContext.request.contextPath}/ServletLogin" method="post">
         <label>Identifiant : <input type="text" name="userID"></label>
         <br>
-        <label>Mot de passe : <input type="text" name="password"></label>
+        <label>Mot de passe : <input type="password" name="password"></label>
         <br>
         <%
             List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
@@ -41,6 +44,14 @@
     <form action="" method="get">
         <input type="button" value="Créer un compte">
     </form>
+<c:choose>
+    <c:when test="${!empty user}" >
+        <p>${user.getUsername()} vous êtes connecté</p>
+    </c:when>
+    <c:otherwise>
+         <% response.se%>
+    </c:otherwise>
+</c:choose>
 
 </body>
 </html>
