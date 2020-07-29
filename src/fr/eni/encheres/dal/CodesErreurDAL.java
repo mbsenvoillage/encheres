@@ -18,4 +18,8 @@ public abstract class CodesErreurDAL {
     // Echec du signup
     public static final int ECHEC_SIGNUP_PSEUDO_INUSE = 10001;
     public static final int ECHEC_SIGNUP_EMAIL_INUSE = 10002;
+
+    // Echec requête select
+
+    public static final int ECHEC_LECTURE_DB = 10005;
 }

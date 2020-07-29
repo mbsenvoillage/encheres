@@ -72,6 +72,7 @@ public class UserDAOJdbcImpl implements UserDAO {
             throw bizEx;
         }
 
+        // Si l'insertion a fonctionné, l'utilisateur est connecté
         user.setConnecte(true);
         return user;
     }
@@ -107,6 +108,90 @@ public class UserDAOJdbcImpl implements UserDAO {
             throw bizEx;
         }
         return login;
+    }
+
+    // Méthode pour vérifier si le pseudo n'est pas déjà utilisé
+
+    public void checkPseudo(String pseudo) throws BusinessException {
+        boolean pseudoNotAvailable = false;
+
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if(pseudo == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        // tente d'ouvrir une connection à la BDD
+        try(Connection cnx = ConnectionWizard.getConnection()) {
+
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_USER_BY_PSEUDO);
+
+            // Remplit les placeholders avec le username
+            stmt.setString(1, pseudo);
+            ResultSet rs = stmt.executeQuery();
+
+            // Assigne au booléen ok, la valeur rs.next() qui parcours le resultset
+
+            pseudoNotAvailable = rs.next();
+
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        if (pseudoNotAvailable) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_SIGNUP_PSEUDO_INUSE);
+            throw bizEx;
+        }
+    }
+
+    // Méthode pour vérifier si l'email' n'est pas déjà utilisé
+
+    public void checkEmail(String email) throws BusinessException {
+        boolean emailNotAvailable = false;
+
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if(email == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        // tente d'ouvrir une connection à la BDD
+        try(Connection cnx = ConnectionWizard.getConnection()) {
+
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_USER_BY_EMAIL);
+
+            // Remplit les placeholders avec le username
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            // Assigne au booléen ok, la valeur rs.next() qui parcours le resultset
+
+            emailNotAvailable = rs.next();
+
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        if (emailNotAvailable) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_SIGNUP_EMAIL_INUSE);
+            throw bizEx;
+        }
     }
 
 }

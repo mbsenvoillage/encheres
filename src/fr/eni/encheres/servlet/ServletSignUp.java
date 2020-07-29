@@ -1,7 +1,9 @@
 package fr.eni.encheres.servlet;
 
 import fr.eni.encheres.BusinessException;
+import fr.eni.encheres.bll.UserManager;
 import fr.eni.encheres.bo.userBean;
+import fr.eni.encheres.dal.UserDAO;
 import fr.eni.encheres.dal.UserDAOJdbcImpl;
 
 import javax.servlet.RequestDispatcher;
@@ -10,16 +12,30 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet("/signup")
 public class ServletSignUp extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        UserManager userManager = new UserManager();
+
+        String pseudo = request.getParameter("pseudo");
+        String email = request.getParameter("email");
+
+        // Assigne l'ensemble des paramètres à une Map
+        Map parametres = request.getParameterMap();
+
         userBean user = new userBean();
-        List<Integer> errorList = new ArrayList<>();
-        UserDAOJdbcImpl daoJdbc = new UserDAOJdbcImpl();
+
         user.setPseudo(request.getParameter("pseudo"));
         user.setNom(request.getParameter("nom"));
         user.setPrenom(request.getParameter("prenom"));
@@ -31,11 +47,15 @@ public class ServletSignUp extends HttpServlet {
         user.setMdp(request.getParameter("mdp"));
 
         try {
-            daoJdbc.insertUser(user);
+            // Si l'insertion a fonctionné, l'utilisateur est redirigé vers son profil
+            userManager.addUser(parametres, pseudo, email, user);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
             rd.forward(request, response);
         } catch (BusinessException e) {
             e.printStackTrace();
+            request.setAttribute("errorList", e.getErrorList());
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/signup.jsp");
             rd.forward(request, response);
 
