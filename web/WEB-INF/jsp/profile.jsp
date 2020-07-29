@@ -14,7 +14,7 @@
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 %>
-    <p>Bonjour ${user.getUsername()}</p>
+    <p>Bonjour ${user.getPseudo()}</p>
     <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
 
 </body>
