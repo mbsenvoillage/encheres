@@ -48,9 +48,6 @@
     <c:when test="${!empty user}" >
         <p>${user.getUsername()} vous êtes connecté</p>
     </c:when>
-    <c:otherwise>
-         <% response.se%>
-    </c:otherwise>
 </c:choose>
 
 </body>
