@@ -5,6 +5,7 @@ import fr.eni.encheres.bo.userBean;
 import fr.eni.encheres.dal.DAOFactory;
 import fr.eni.encheres.dal.UserDAO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ public class UserManager {
         return this.user.checkID(login);
     }
 
-    public userBean addUser(Map parametres, String pseudo, String email, userBean utilisateur) throws BusinessException {
+    public userBean addUser(Map parametres, String pseudo, String email, userBean utilisateur, HttpServletRequest req) throws BusinessException {
         BusinessException bizEx = new BusinessException();
 
         // Tous le champs ont-ils étés remplis ?
@@ -28,6 +29,13 @@ public class UserManager {
 
         // Le format du pseudo est-il bon ?
         this.pseudoFormatOk(pseudo, bizEx);
+
+        // Le mdp est-il identique à la confirmation
+
+        if (!req.getParameter("mdp").equals(req.getParameter("confirmation"))) {
+            bizEx.addError(CodesErreurBLL.ERREUR_SAISIE_MDP);
+            throw bizEx;
+        }
 
         // Si les test ci-dessus sont passés, on vérifie si le pseudo et l'email sont dispos
         // Pour enfin ajouter l'utilisateur
@@ -83,3 +91,4 @@ public class UserManager {
 
     }
 }
+// TODO : add format checks for email , cpo

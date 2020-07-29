@@ -39,7 +39,7 @@ public class ServletSignUp extends HttpServlet {
         user.setPseudo(request.getParameter("pseudo"));
         user.setNom(request.getParameter("nom"));
         user.setPrenom(request.getParameter("prenom"));
-        user.setEmail(request.getParameter("email"));
+        user.setEmail(request.getParameter("email").trim());
         user.setTelephone(request.getParameter("telephone"));
         user.setRue(request.getParameter("rue"));
         user.setCpo(request.getParameter("cpo"));
@@ -48,7 +48,7 @@ public class ServletSignUp extends HttpServlet {
 
         try {
             // Si l'insertion a fonctionné, l'utilisateur est redirigé vers son profil
-            userManager.addUser(parametres, pseudo, email, user);
+            userManager.addUser(parametres, pseudo, email, user, request);
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");

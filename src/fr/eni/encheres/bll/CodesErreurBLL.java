@@ -10,4 +10,8 @@ public class CodesErreurBLL {
     // Pseudo ne contient pas que des caractères alphanumériques
 
     public static final int ERREUR_FORMAT_PSEUDO = 40001;
+
+    // Mdp et confirmation diffèerent
+
+    public static final int ERREUR_SAISIE_MDP = 40002;
 }
