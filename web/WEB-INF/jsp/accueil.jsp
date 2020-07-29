@@ -6,12 +6,25 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+    <%
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    %>
     <head>
         <title>Accueil</title>
     </head>
     <body>
-        <header><a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a></header>
+        <header>
+            <c:choose>
+                <c:when test="${user.isConnecte()}">
+                    <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a>
+                </c:otherwise>
+            </c:choose>
+        </header>
         <h2>Liste des enchères</h2>
         <div class="search-bar">
             <h3>Filtres</h3>

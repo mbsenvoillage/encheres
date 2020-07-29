@@ -6,4 +6,6 @@ public abstract class CodesErreurServlet {
 
     // Champs requis vides
     public static final int CHAMPS_VIDE_ERREUR = 30000;
+
+    // TODO clean the error codes up
 }

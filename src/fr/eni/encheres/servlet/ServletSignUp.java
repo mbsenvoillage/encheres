@@ -51,7 +51,7 @@ public class ServletSignUp extends HttpServlet {
             userManager.addUser(parametres, pseudo, email, user);
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
             rd.forward(request, response);
         } catch (BusinessException e) {
             e.printStackTrace();

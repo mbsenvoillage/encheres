@@ -52,7 +52,7 @@ public class ServletLogin extends HttpServlet {
                 // On lui assigne l'utilisateur en attribut
                 session.setAttribute("user", user);
 
-                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
                 rd.forward(request, response);
 
             } catch (BusinessException e) {
