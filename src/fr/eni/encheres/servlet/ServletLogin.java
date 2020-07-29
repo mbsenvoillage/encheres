@@ -1,9 +1,8 @@
 package fr.eni.encheres.servlet;
 
 import fr.eni.encheres.BusinessException;
-import fr.eni.encheres.bll.loginManager;
-import fr.eni.encheres.bo.loginBean;
-import fr.eni.encheres.dal.ValidateLogin;
+import fr.eni.encheres.bll.UserManager;
+import fr.eni.encheres.bo.userBean;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,16 +18,16 @@ import java.util.List;
 @WebServlet("/ServletLogin")
 public class ServletLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        loginBean user = new loginBean();
+        userBean user = new userBean();
         List<Integer> errorList = new ArrayList<>();
-        loginManager loginManager = new loginManager();
+        UserManager userManager = new UserManager();
 
         // Assigne aux variables de la classe loginBean la valeur des params userID et password
-        user.setUsername(request.getParameter("userID"));
-        user.setPassword(request.getParameter("password"));
+        user.setPseudo(request.getParameter("userID"));
+        user.setMdp(request.getParameter("password"));
 
         // Si ces champs sont vides, une erreur correspondante est ajoutée à la liste
-        if (user.getUsername().trim().isEmpty() || user.getPassword().trim().isEmpty()) {
+        if (user.getPseudo().trim().isEmpty() || user.getMdp().trim().isEmpty()) {
             errorList.add(CodesErreurServlet.CHAMPS_VIDE_ERREUR);
         }
 
@@ -40,7 +39,7 @@ public class ServletLogin extends HttpServlet {
         } else {
             try {
                 // Vérifie si l'authentification est réussie
-                loginManager.checkCredentials(user);
+                userManager.checkCredentials(user);
 
                 // ValidateLogin.checkID(user); old code from before loginDAO and loginManager
 

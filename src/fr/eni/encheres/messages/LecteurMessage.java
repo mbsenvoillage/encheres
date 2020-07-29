@@ -31,7 +31,7 @@ public abstract class LecteurMessage {
             }
 
         } catch (Exception e) {
-            // SI le code est inconnu, on assigne un message d'erreur inconnue
+            // Si le code est inconnu, on assigne un message d'erreur inconnue
             e.printStackTrace();
             message = "Une erreur inconnue est survenue";
         }

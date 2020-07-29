@@ -41,12 +41,12 @@
         </label>
         <a href="">Mot de passe oublié</a>
     </form>
-    <form action="" method="get">
-        <input type="button" value="Créer un compte">
+    <form action="${pageContext.request.contextPath}/signup" method="get">
+        <input type="submit" value="Créer un compte">
     </form>
 <c:choose>
     <c:when test="${!empty user}" >
-        <p>${user.getUsername()} vous êtes connecté</p>
+        <p>${user.getPseudo()} vous êtes connecté</p>
     </c:when>
 </c:choose>
 
