@@ -19,6 +19,11 @@
             <c:choose>
                 <c:when test="${user.isConnecte()}">
                     <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
+                    <c:url value="/profil" var="profil">
+                        <c:param name="pseudo" value="${user.getPseudo()}"/>
+                    </c:url>
+                    <a href="<c:out value="${profil}"/>">Profil</a>
+
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a>

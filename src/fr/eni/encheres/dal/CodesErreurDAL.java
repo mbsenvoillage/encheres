@@ -22,4 +22,13 @@ public abstract class CodesErreurDAL {
     // Echec requête select
 
     public static final int ECHEC_LECTURE_DB = 10005;
+
+    // Echec de l'update
+
+    public static final int ECHEC_UPDATE_DB = 10006;
+
+    // Mot de passe erronné
+
+    public static final int ECHEC_VALIDATION_PWD = 10007;
+
 }

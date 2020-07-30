@@ -2,10 +2,12 @@ package fr.eni.encheres.bll;
 
 import fr.eni.encheres.BusinessException;
 import fr.eni.encheres.bo.userBean;
+import fr.eni.encheres.dal.CodesErreurDAL;
 import fr.eni.encheres.dal.DAOFactory;
 import fr.eni.encheres.dal.UserDAO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,6 +95,66 @@ public class UserManager {
 
     public userBean displayUserPublicInfo(String pseudo) throws BusinessException {
         return this.user.selectUserPublicInfo(pseudo);
+    }
+
+    public userBean getUserPrivateInfo(String pseudo) throws BusinessException {
+        return this.user.selectUserPrivateInfo(pseudo);
+    }
+
+    public boolean passwordCheck(userBean user) throws BusinessException {
+        return this.user.passwordIsValid(user);
+    }
+
+    public userBean updateUserProfile(Map parametres, userBean currentUser, userBean modifs, HashMap<String, String> mdp, HttpServletRequest req) throws BusinessException {
+        BusinessException bizEx = new BusinessException();
+
+        // Tous le champs ont-ils étés remplis ?
+        this.allFieldsAreFilled(parametres, bizEx);
+
+        // Le format du pseudo est-il bon ?
+        this.pseudoFormatOk(modifs.getPseudo(), bizEx);
+
+        // Le nouveau mdp est-il identique à la confirmation ?
+
+        if (!req.getParameter("nouveaumdp").equals(req.getParameter("confirmation"))) {
+            bizEx.addError(CodesErreurBLL.ERREUR_SAISIE_MDP);
+            throw bizEx;
+        }
+
+        // Si les test ci-dessus sont passés, on vérifie si le pseudo et l'email sont dispos
+        // Pour enfin updater l'utilisateur
+        if (!bizEx.containsErrors()) {
+
+            // SI l'utilisateur a changé son pseudo, il faut vérifier sa disponibilité
+            if (!modifs.getPseudo().equals(currentUser.getPseudo())) {
+                this.validerPseudo(modifs.getPseudo());
+            }
+
+            // SI l'utilisateur a changé son email, il faut vérifier sa disponibilité
+            if (!modifs.getEmail().equals(currentUser.getEmail())) {
+                this.validerEmail(modifs.getEmail());
+            }
+
+            // check the old password
+
+            if (!modifs.getMdp().equals(currentUser.getMdp())) {
+                bizEx.addError(CodesErreurDAL.ECHEC_VALIDATION_PWD);
+                throw bizEx;
+            }
+
+            // On donne au nouveau userBean l'identifiant de l'ancien
+            modifs.setUserNb(currentUser.getUserNb());
+            modifs.setConnecte(true);
+            modifs.setCredit(currentUser.getCredit());
+
+            // On fait l'update
+            user.updateUserInfo(modifs);
+
+        } else {
+            throw bizEx;
+        }
+
+        return modifs;
     }
 }
 // TODO : add format checks for email , cpo

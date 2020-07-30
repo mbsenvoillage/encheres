@@ -43,6 +43,8 @@ public class ServletLogin extends HttpServlet {
 
                 // ValidateLogin.checkID(user); old code from before loginDAO and loginManager
 
+                user = userManager.getUserPrivateInfo(request.getParameter("userID"));
+
                 // Si oui, l'utilisateur est connecte
                 user.setConnecte(true);
 
