@@ -69,3 +69,4 @@ public class ServletSignUp extends HttpServlet {
         rd.forward(request, response);
     }
 }
+// TODO handle the case where no phone number is provided
