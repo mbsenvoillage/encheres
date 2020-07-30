@@ -17,7 +17,40 @@ public class UserDAOJdbcImpl implements UserDAO {
     private static final String SELECT_USER_PUBLIC_INFO = "select pseudo, nom, prenom, email, telephone, rue, code_postal, ville from utilisateurs where pseudo = ?";
     private static final String SELECT_USER_PRIVATE_INFO = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit from utilisateurs where pseudo = ?";
     private static final String UPDATE_USER_INFO = "update utilisateurs set pseudo = ?, nom = ?, prenom = ?, email = ?, telephone = ?, rue = ?, code_postal = ?, ville = ?, mot_de_passe = ? where no_utilisateur = ?";
+    private static final String DELETE_USER = "delete from utilisateurs where no_utilisateur = ?";
 
+
+    public void deleteUser(int nbutilisateur) throws BusinessException {
+        // tente d'ouvrir une connection à la BDD
+        try(Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(DELETE_USER);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, nbutilisateur);
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_DELETE_OBJECT);
+            throw bizEx;
+        }
+    }
 
     public userBean updateUserInfo (userBean user) throws BusinessException {
 

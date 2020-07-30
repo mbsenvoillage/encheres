@@ -31,4 +31,8 @@ public abstract class CodesErreurDAL {
 
     public static final int ECHEC_VALIDATION_PWD = 10007;
 
+    // Echec suppression  de l'utilisateur
+
+    public static final int ECHEC_DELETE_OBJECT = 10008;
+
 }

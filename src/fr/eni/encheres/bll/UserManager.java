@@ -156,5 +156,9 @@ public class UserManager {
 
         return modifs;
     }
+
+    public void supprimerUtilisateur(userBean user) throws BusinessException {
+        this.user.deleteUser(user.getUserNb());
+    }
 }
 // TODO : add format checks for email , cpo
