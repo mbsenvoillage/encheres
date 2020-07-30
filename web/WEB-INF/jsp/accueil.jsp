@@ -43,6 +43,10 @@
                 <br>
                 <input type="submit" value="Rechercher">
             </form>
+            <c:url value="/profil" var="profil">
+                <c:param name="pseudo" value="lolo"/>
+            </c:url>
+            <a href="<c:out value="${profil}"/>">lolo</a>
         </div>
         <div class="search-results">
 

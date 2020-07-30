@@ -90,5 +90,9 @@ public class UserManager {
         }
 
     }
+
+    public userBean displayUserPublicInfo(String pseudo) throws BusinessException {
+        return this.user.selectUserPublicInfo(pseudo);
+    }
 }
 // TODO : add format checks for email , cpo

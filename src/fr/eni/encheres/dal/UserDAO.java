@@ -12,4 +12,6 @@ public interface UserDAO {
     public void checkPseudo(String pseudo) throws BusinessException;
 
     public void checkEmail(String email) throws BusinessException;
+
+    public userBean selectUserPublicInfo(String pseudo) throws BusinessException;
 }
