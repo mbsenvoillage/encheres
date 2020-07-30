@@ -47,6 +47,9 @@
                                     <br><br>
                                     <input type="submit" value="Modifier">
                                 </form>
+                                <form action="${pageContext.request.contextPath}/delete" method="get">
+                                    <input type="submit" name="deletebtn" value="Supprimer mon compte">
+                                </form>
                             </c:when>
                             <c:otherwise>
                                 <ul>
