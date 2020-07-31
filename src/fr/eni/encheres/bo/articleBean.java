@@ -13,16 +13,12 @@ public class articleBean implements Serializable {
     private LocalDate endAuc;
     private int startPrice;
     private int salePrice;
-    enum saleStatus {
-        CREATED,
-        ONGOING,
-        OVER,
-        COLLECTED
-    }
     private PickUp pickUp;
     private Category category;
+    private String saleStatus;
 
-    public articleBean() {};
+    public articleBean() {
+    }
 
     public int getArtNb() {
         return artNb;
@@ -94,5 +90,13 @@ public class articleBean implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getSaleStatus() {
+        return saleStatus;
+    }
+
+    public void setSaleStatus(String saleStatus) {
+        this.saleStatus = saleStatus;
     }
 }
