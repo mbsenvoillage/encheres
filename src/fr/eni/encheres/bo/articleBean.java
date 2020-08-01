@@ -2,6 +2,7 @@ package fr.eni.encheres.bo;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class articleBean implements Serializable {
 
@@ -9,8 +10,8 @@ public class articleBean implements Serializable {
     private int artNb;
     private String artName;
     private String artDescrip;
-    private LocalDate startAuc;
-    private LocalDate endAuc;
+    private LocalDateTime startAuc;
+    private LocalDateTime endAuc;
     private int startPrice;
     private int salePrice;
     private PickUp pickUp;
@@ -44,19 +45,19 @@ public class articleBean implements Serializable {
         this.artDescrip = artDescrip;
     }
 
-    public LocalDate getStartAuc() {
+    public LocalDateTime getStartAuc() {
         return startAuc;
     }
 
-    public void setStartAuc(LocalDate startAuc) {
+    public void setStartAuc(LocalDateTime startAuc) {
         this.startAuc = startAuc;
     }
 
-    public LocalDate getEndAuc() {
+    public LocalDateTime getEndAuc() {
         return endAuc;
     }
 
-    public void setEndAuc(LocalDate endAuc) {
+    public void setEndAuc(LocalDateTime endAuc) {
         this.endAuc = endAuc;
     }
 

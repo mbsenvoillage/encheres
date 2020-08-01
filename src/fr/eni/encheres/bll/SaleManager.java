@@ -9,6 +9,7 @@ import fr.eni.encheres.dal.SaleDAO;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class SaleManager {
@@ -49,8 +50,8 @@ public class SaleManager {
         et que la date de fin est postérieure à celle de début
      */
 
-    private void dateIsValid(LocalDate startdate, LocalDate endDate, BusinessException bizex) {
-        if (startdate == null || endDate == null || startdate.isBefore(LocalDate.now()) || endDate.isBefore(startdate)) {
+    private void dateIsValid(LocalDateTime startdate, LocalDateTime endDate, BusinessException bizex) {
+        if (startdate == null || endDate == null || startdate.isBefore(LocalDateTime.now()) || endDate.isBefore(startdate)) {
             bizex.addError(CodesErreurBLL.ERREUR_DATE);
         }
     }

@@ -34,8 +34,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 // Remplit les placeholders avec les infos passées param dans le formulaire de signup
                 stmt.setString(1, article.getArtName());
                 stmt.setString(2, article.getArtDescrip());
-                stmt.setDate(3, Date.valueOf(article.getStartAuc()));
-                stmt.setDate(4, Date.valueOf(article.getEndAuc()));
+                stmt.setTimestamp(3, Timestamp.valueOf(article.getStartAuc()));
+                stmt.setTimestamp(4, Timestamp.valueOf(article.getEndAuc()));
                 stmt.setInt(5, article.getStartPrice());
                 stmt.setInt(6, user.getUserNb());
                 stmt.setInt(7, article.getCategory().getCatNb());

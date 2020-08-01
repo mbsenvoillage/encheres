@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,8 @@ public class ServletUpForSale extends HttpServlet {
         // Si aucune date n'a été renseignée, une exception est levée
 
         try {
-            article.setStartAuc(LocalDate.parse(request.getParameter("salestart")));
-            article.setEndAuc(LocalDate.parse(request.getParameter("saleend")));
+            article.setStartAuc(LocalDateTime.parse(request.getParameter("salestart")));
+            article.setEndAuc(LocalDateTime.parse(request.getParameter("saleend")));
         } catch (Exception e) {
             e.printStackTrace();
             if (errorList.size() == 0) {

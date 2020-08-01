@@ -66,8 +66,8 @@
                         <label for="photo">Photo de l'article <button id="photo">UPLOADER</button></label><br><br>
                         <label for="prix">Points:</label>
                         <input type="number" name="prix" step="10"><br><br>
-                        <label>Début de l'enchère<input type="date" id="salestart" name="salestart"></label><br><br>
-                        <label>Fin de l'enchère<input type="date" id="saleend" name="saleend" ></label><br><br>
+                        <label>Début de l'enchère<input type="datetime-local" id="salestart" name="salestart"></label><br><br>
+                        <label>Fin de l'enchère<input type="datetime-local" id="saleend" name="saleend" ></label><br><br>
                         <fieldset>
                             <legend>Retrait</legend>
                             <label for="rue">Rue : <input type="text" id="rue" name="rue" value="${user.getRue()}"></label><br><br>
