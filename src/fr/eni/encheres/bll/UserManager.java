@@ -39,7 +39,7 @@ public class UserManager {
             throw bizEx;
         }
 
-        // Si les test ci-dessus sont passés, on vérifie si le pseudo et l'email sont dispos
+        // Si les tests ci-dessus sont passés, on vérifie si le pseudo et l'email sont dispos
         // Pour enfin ajouter l'utilisateur
         if (!bizEx.containsErrors()) {
             this.validerPseudo(pseudo);

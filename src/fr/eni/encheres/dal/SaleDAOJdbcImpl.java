@@ -8,11 +8,12 @@ import fr.eni.encheres.bo.userBean;
 
 import java.sql.*;
 
-public class SaleDAOJdbcImpl {
+public class SaleDAOJdbcImpl implements SaleDAO {
 
     private final String INSERT_NEW_ARTICLE = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (?, ?, ?, ?, ?, ?, ?)";
+    private final String SELECT_CAT_BY_NAME = "select no_categorie from categories where libelle = ?";
 
-    public articleBean inserArticle(articleBean article, userBean user, Category cat) throws BusinessException {
+    public articleBean inserArticle(articleBean article, userBean user) throws BusinessException {
 
         // Si la méthode hérite d'un objet vide une erreur est levée
         if (article == null) {
@@ -35,10 +36,9 @@ public class SaleDAOJdbcImpl {
                 stmt.setString(2, article.getArtDescrip());
                 stmt.setDate(3, Date.valueOf(article.getStartAuc()));
                 stmt.setDate(4, Date.valueOf(article.getEndAuc()));
-                stmt.setString(5, user.getTelephone());
                 stmt.setInt(5, article.getStartPrice());
                 stmt.setInt(6, user.getUserNb());
-                stmt.setInt(7, cat.getCatNb());
+                stmt.setInt(7, article.getCategory().getCatNb());
 
                 // Envoie la requête
                 stmt.executeUpdate();
@@ -69,5 +69,44 @@ public class SaleDAOJdbcImpl {
         // Si l'insertion a fonctionné, l'utilisateur est connecté
         article.setSaleStatus(String.valueOf(SaleStatus.CREATED));
         return article;
+    }
+
+    public int selectCatByName(String cat) throws BusinessException {
+
+        int catId = 0;
+
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if(cat == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        // tente d'ouvrir une connection à la BDD
+        try(Connection cnx = ConnectionWizard.getConnection()) {
+
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_CAT_BY_NAME);
+
+            // Remplit les placeholders avec le username
+            stmt.setString(1, cat);
+            ResultSet rs = stmt.executeQuery();
+
+            // Assigne au booléen ok, la valeur rs.next() qui parcours le resultset
+
+            if(rs.next()) {
+                catId = rs.getInt("no_categorie");
+            }
+
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        return catId;
     }
 }

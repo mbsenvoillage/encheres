@@ -47,7 +47,7 @@ public class ServletSignUp extends HttpServlet {
         user.setMdp(request.getParameter("mdp"));
 
         try {
-            // Si l'insertion a fonctionné, l'utilisateur est redirigé vers son profil
+            // Si l'insertion fonctionne, l'utilisateur est redirigé vers son profil
             userManager.addUser(parametres, pseudo, email, user, request);
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
