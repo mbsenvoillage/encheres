@@ -20,32 +20,36 @@
                 <c:choose>
                     <c:when test="${added}">
                     <form id="saleform" action="${pageContext.request.contextPath}/nouvellevente" method="post">
-                        <label for="article">Article : <input type="text" name="article"></label><br><br>
-                        <label for="description">Description : <textarea name="description" cols="20" rows="5"></textarea></label><br><br>
+                        <label for="article">Article : <input type="text" name="article" value="${article.getArtName()}"></label><br><br>
+                        <label for="description">Description : <textarea name="description" cols="20" rows="5" >${article.getArtDescrip()}</textarea></label><br><br>
                         <label for="categorie"> Catégorie
                             <select name="categorie" >
-                                <option value="informatique">Informatique</option>
-                                <option value="ameublement">Ameublement</option>
-                                <option value="vetement">Vêtement</option>
-                                <option value="sportloisir">Sport&Loisir</option>
+                                <option value="informatique" <c:if test="${article.getArtName() == 'Informatique'}">selected</c:if> >Informatique</option>
+                                <option value="ameublement" <c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if>>Ameublement</option>
+                                <option value="vetement" <c:if test="${article.getArtName() == 'Vetements'}">selected</c:if>>Vêtement</option>
+                                <option value="sportloisir" <c:if test="${article.getArtName() == 'Sport & Loisirs'}">selected</c:if>>Sport&Loisir</option>
                             </select>
                         </label><br><br>
                         <label for="photo">Photo de l'article <button name="photo">UPLOADER</button></label><br><br>
                         <label for="prix">Points:</label>
-                        <input type="number" id="prix" name="prix" step="10"><br><br>
+                        <input type="number" id="prix" name="prix" step="10" min="0" value="${article.getStartPrice()}"><br><br>
                         <label>Début de l'enchère<input type="date" name="salestart"></label><br><br>
                         <label>Fin de l'enchère<input type="date" name="saleend" ></label><br><br>
                         <fieldset>
                             <legend>Retrait</legend>
-                            <label for="rue">Rue : <input type="text" name="rue"></label><br><br>
-                            <label for="cpo">Code postal : <input type="text" name="cpo"></label><br><br>
-                            <label for="ville">Ville : <input type="text" name="ville"></label><br><br>
+                            <label for="rue">Rue : <input type="text" name="rue" value="${article.getPickUp().getRue()}"></label><br><br>
+                            <label for="cpo">Code postal : <input type="text" name="cpo" value="${article.getPickUp().getCpo()}"></label><br><br>
+                            <label for="ville">Ville : <input type="text" name="ville" value="${article.getPickUp().getVille()}"></label><br><br>
                         </fieldset>
-                        <input type="submit" value="Créer">
+                        <input type="submit" value="Enregistrer">
+                    </form>
+                    <form action="${pageContext.request.contextPath}/" method="get">
                         <input type="submit" name="cancelbtn" value="Annuler">
-                        <c:if test="${param.cancelbtn == 'Annuler'}">
-                            <c:redirect url="/accueil"/>
-                        </c:if>
+                    </form>
+                    <form action="${pageContext.request.contextPath}/" method="get">
+                        <input type="submit" name="cancelbtn" value="Annuler la vente">
+                    </form>
+                    <p>L'annonce a bien été ajoutée.</p>
                     </c:when>
                     <c:otherwise>
                     <form id="saleform" action="${pageContext.request.contextPath}/nouvellevente" method="post">
@@ -61,20 +65,16 @@
                         </label><br><br>
                         <label for="photo">Photo de l'article <button id="photo">UPLOADER</button></label><br><br>
                         <label for="prix">Points:</label>
-                        <input type="number" id="prix" name="prix" step="10"><br><br>
+                        <input type="number" name="prix" step="10"><br><br>
                         <label>Début de l'enchère<input type="date" id="salestart" name="salestart"></label><br><br>
                         <label>Fin de l'enchère<input type="date" id="saleend" name="saleend" ></label><br><br>
                         <fieldset>
                             <legend>Retrait</legend>
-                            <label for="rue">Rue : <input type="text" id="rue" name="rue"></label><br><br>
-                            <label for="cpo">Code postal : <input type="text" id="cpo" name="cpo"></label><br><br>
-                            <label for="ville">Ville : <input type="text" id="ville" name="ville"></label><br><br>
+                            <label for="rue">Rue : <input type="text" id="rue" name="rue" value="${user.getRue()}"></label><br><br>
+                            <label for="cpo">Code postal : <input type="text" id="cpo" name="cpo" value="${user.getVille()}"></label><br><br>
+                            <label for="ville">Ville : <input type="text" id="ville" name="ville" value="${user.getCpo()}"></label><br><br>
                         </fieldset>
-                        <input type="submit" value="Créer">
-                        <input type="submit" name="cancelbtn" value="Annuler">
-                        <c:if test="${param.cancelbtn == 'Annuler'}">
-                            <c:redirect url="/accueil"/>
-                        </c:if>
+                        <input type="submit" value="Enregistrer">
                         <%
                             List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
                             if (errorList != null)
@@ -87,10 +87,13 @@
                                 }
                             }
                         %>
+                    </form>
+                        <form action="${pageContext.request.contextPath}/" method="get">
+                            <input type="submit" name="cancelbtn" value="Annuler">
+                        </form>
                     </c:otherwise>
                 </c:choose>
 
-                </form>
             </div>
         </main>
     </body>

@@ -15,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @WebServlet("/nouvellevente")
@@ -23,6 +26,7 @@ public class ServletUpForSale extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         SaleManager saleManager = new SaleManager();
         articleBean article = new articleBean();
+        List<Integer> errorList = new ArrayList<>();
 
         // On récupère les infos de l'utilisateur courant par l'attribut de session user
 
@@ -40,9 +44,37 @@ public class ServletUpForSale extends HttpServlet {
         article.setArtDescrip(request.getParameter("description"));
         article.setCategory(new Category(request.getParameter("categorie")));
         System.out.println("This is the cat name : " + request.getParameter("categorie"));
-        article.setStartPrice(Integer.parseInt(request.getParameter("prix")));
-        article.setStartAuc(LocalDate.parse(request.getParameter("salestart")));
-        article.setEndAuc(LocalDate.parse(request.getParameter("saleend")));
+
+
+        // Si aucun prix n'a été renseigné, une exception est levée
+
+        try {
+            article.setStartPrice(Integer.parseInt(request.getParameter("prix")));
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            errorList.add(CodesErreurServlet.CHAMPS_VIDE_ERREUR);
+        }
+
+        // Si aucune date n'a été renseignée, une exception est levée
+
+        try {
+            article.setStartAuc(LocalDate.parse(request.getParameter("salestart")));
+            article.setEndAuc(LocalDate.parse(request.getParameter("saleend")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (errorList.size() == 0) {
+                errorList.add(CodesErreurServlet.CHAMPS_VIDE_ERREUR);
+            }
+        }
+
+        if (errorList.size() > 0) {
+            request.setAttribute("errorList", errorList);
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
+            rd.forward(request, response);
+        }
+
+
         article.setPickUp(new PickUp(request.getParameter("rue"), request.getParameter("cpo"), request.getParameter("ville")));
 
         try {

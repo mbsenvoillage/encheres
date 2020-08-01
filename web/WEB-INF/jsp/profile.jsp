@@ -13,12 +13,15 @@
     <title>Profile</title>
 </head>
 <body>
+    <!-- || requestScope.pseudo == sessionScope.user.getPseudo() condition problématique
+    même sans avoir login, cette condition semble être remplie, puisque la page
+    affiche l'option logout-->
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 %>
     <header>
         <c:choose>
-            <c:when test="${param.pseudo == user.getPseudo() || requestScope.pseudo == user.getPseudo()}" >
+            <c:when test="${display}" >
                 <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
                 <a href="${pageContext.request.contextPath}/">Accueil</a>
             </c:when>
@@ -29,7 +32,7 @@
     </header>
     <div class="profilecard">
                 <c:choose>
-                    <c:when test="${param.pseudo == user.getPseudo() || requestScope.pseudo == user.getPseudo()}">
+                    <c:when test="${display}">
                         <c:choose>
                             <c:when test="${!empty update}" >
                                 <form action="${pageContext.request.contextPath}/modifconfirm" method="post">

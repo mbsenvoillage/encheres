@@ -17,14 +17,10 @@
     <body>
         <header>
             <c:choose>
-                <c:when test="${user.isConnecte()}">
+                <c:when test="${user != null}">
                     <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
                     <a href="${pageContext.request.contextPath}/nouvellevente">Vendre</a>
-                    <c:url value="/profil" var="profil">
-                        <c:param name="pseudo" value="${user.getPseudo()}"/>
-                    </c:url>
-                    <a href="<c:out value="${profil}"/>">Profil</a>
-
+                    <a href="${pageContext.request.contextPath}/profil">Profil</a>
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a>
@@ -50,7 +46,7 @@
                 <input type="submit" value="Rechercher">
             </form>
             <c:url value="/profil" var="profil">
-                <c:param name="pseudo" value="lolo"/>
+                <c:param name="pseudo" value="lolo93130"/>
             </c:url>
             <a href="<c:out value="${profil}"/>">lolo</a>
         </div>
