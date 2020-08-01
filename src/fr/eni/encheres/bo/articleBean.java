@@ -17,8 +17,13 @@ public class articleBean implements Serializable {
     private PickUp pickUp;
     private Category category;
     private String saleStatus;
+    private userBean seller;
+
 
     public articleBean() {
+        seller = new userBean();
+        category = new Category();
+        pickUp = new PickUp();
     }
 
     public int getArtNb() {
@@ -99,5 +104,21 @@ public class articleBean implements Serializable {
 
     public void setSaleStatus(String saleStatus) {
         this.saleStatus = saleStatus;
+    }
+
+    public userBean getSeller() {
+        return seller;
+    }
+
+    public void setSeller(userBean seller) {
+        this.seller = seller;
+    }
+
+    public LocalDate startAucToLocalDate() {
+        return this.startAuc.toLocalDate();
+    }
+
+    public LocalDate endAucToLocalDate() {
+        return this.endAuc.toLocalDate();
     }
 }

@@ -10,12 +10,17 @@ import fr.eni.encheres.dal.SaleDAO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class SaleManager {
     private SaleDAO articleforSale;
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
+
+    public List<articleBean> displayAllArticles() throws BusinessException {
+        return articleforSale.selectAllArticles();
+    }
 
 
     public articleBean addArticleForSale(Map parametres, articleBean article, userBean user) throws BusinessException {
@@ -51,7 +56,7 @@ public class SaleManager {
      */
 
     private void dateIsValid(LocalDateTime startdate, LocalDateTime endDate, BusinessException bizex) {
-        if (startdate == null || endDate == null || startdate.isBefore(LocalDateTime.now()) || endDate.isBefore(startdate)) {
+        if (startdate == null || endDate == null || startdate.isBefore(LocalDateTime.now().plusMinutes(10)) || endDate.isBefore(startdate)) {
             bizex.addError(CodesErreurBLL.ERREUR_DATE);
         }
     }

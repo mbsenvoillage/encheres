@@ -29,6 +29,8 @@ public class ServletUpForSale extends HttpServlet {
         articleBean article = new articleBean();
         List<Integer> errorList = new ArrayList<>();
 
+        request.setCharacterEncoding("UTF-8");
+
         // On récupère les infos de l'utilisateur courant par l'attribut de session user
 
         HttpSession session = request.getSession();

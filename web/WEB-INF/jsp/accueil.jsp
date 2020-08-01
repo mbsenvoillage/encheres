@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
     <%
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -35,7 +36,7 @@
                 <br>
                 <label for="categories">Catégorie :
                 <select id="categories" name="categories">
-                    <option value="toutes">Toutes</option>
+                    <option value="toutes" selected>Toutes</option>
                     <option  value="informatique">Informatique</option>
                     <option value="ameublement">Ameublement</option>
                     <option value="vetement">Vêtement</option>
@@ -51,7 +52,15 @@
             <a href="<c:out value="${profil}"/>">lolo</a>
         </div>
         <div class="search-results">
+            <c:forEach items="${allArticles}" var="element">
 
+                <p><strong>${element.getArtName()}</strong></p>
+                    <p>Prix : ${element.getStartPrice()} points</p>
+                    <p>Fin de l'enchère : ${element.endAucToLocalDate()}</p>
+                    <p>Vendeur : ${element.getSeller().getPseudo()}</p>
+                <br><br>
+
+            </c:forEach>
         </div>
 
     </body>

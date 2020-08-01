@@ -7,11 +7,43 @@ import fr.eni.encheres.bo.articleBean;
 import fr.eni.encheres.bo.userBean;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaleDAOJdbcImpl implements SaleDAO {
 
-    private final String INSERT_NEW_ARTICLE = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (?, ?, ?, ?, ?, ?, ?)";
+    private final String INSERT_NEW_ARTICLE = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie, etat_vente) values (?, ?, ?, ?, ?, ?, ?, ?)";
     private final String SELECT_CAT_BY_NAME = "select no_categorie from categories where libelle = ?";
+    private final String SELECT_ALL_ARTICLES = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur";
+
+
+    public List<articleBean> selectAllArticles() throws BusinessException {
+
+        List<articleBean> allArticles = new ArrayList<articleBean>();
+
+
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_ALL_ARTICLES);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                allArticles.add(articleBuilder(rs));
+            }
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        return allArticles;
+    }
 
     public articleBean inserArticle(articleBean article, userBean user) throws BusinessException {
 
@@ -21,6 +53,10 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
             throw bizEx;
         }
+
+        // On détermine le statut de la vente
+
+        String status = setAucStatus(article.getStartAuc(), article.getEndAuc());
 
         // tente d'ouvrir une connection à la BDD
         try (Connection cnx = ConnectionWizard.getConnection()) {
@@ -39,6 +75,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 stmt.setInt(5, article.getStartPrice());
                 stmt.setInt(6, user.getUserNb());
                 stmt.setInt(7, article.getCategory().getCatNb());
+                stmt.setString(8, status);
 
                 // Envoie la requête
                 stmt.executeUpdate();
@@ -67,7 +104,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
 
         // Si l'insertion a fonctionné, l'utilisateur est connecté
-        article.setSaleStatus(String.valueOf(SaleStatus.CREATED));
+        article.setSaleStatus(status);
         return article;
     }
 
@@ -108,5 +145,33 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
 
         return catId;
+    }
+
+    private String setAucStatus(LocalDateTime start, LocalDateTime end) {
+        String status = "";
+        if (start.isAfter(LocalDateTime.now())) {
+            status = "CR";
+        }
+        if (start.isBefore(LocalDateTime.now()) || start.isEqual(LocalDateTime.now())) {
+            status = "EC";
+        }
+        if (end.isEqual(LocalDateTime.now()) || end.isBefore(LocalDateTime.now())) {
+            status = "ET";
+        }
+
+        return status;
+    }
+
+    private articleBean articleBuilder(ResultSet rs) throws SQLException {
+        articleBean article = new articleBean();
+
+        article.setArtName(rs.getString("nom_article"));
+        article.setStartPrice(rs.getInt("prix_initial"));
+        article.setStartAuc(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+        article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+        article.getSeller().setPseudo(rs.getString("pseudo"));
+        article.getSeller().setUserNb(rs.getInt("no_utilisateur"));
+
+        return article;
     }
 }
