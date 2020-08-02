@@ -11,7 +11,11 @@ public class CodesErreurBLL {
 
     public static final int ERREUR_FORMAT_PSEUDO = 40001;
 
-    // Mdp et confirmation diffèerent
+    // Mdp et confirmation diffèrent
 
     public static final int ERREUR_SAISIE_MDP = 40002;
+
+    // Les dates de début et/ou de fin d'enchères sont invalides
+
+    public static final int ERREUR_DATE = 40003;
 }

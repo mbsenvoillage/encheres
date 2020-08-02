@@ -24,3 +24,5 @@ out/
 *.tar.gz
 *.rar
 *.iml
+
+web/WEB-INF/.DS_Store

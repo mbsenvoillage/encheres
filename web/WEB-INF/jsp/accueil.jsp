@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
     <%
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -17,13 +18,10 @@
     <body>
         <header>
             <c:choose>
-                <c:when test="${user.isConnecte()}">
+                <c:when test="${user != null}">
                     <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
-                    <c:url value="/profil" var="profil">
-                        <c:param name="pseudo" value="${user.getPseudo()}"/>
-                    </c:url>
-                    <a href="<c:out value="${profil}"/>">Profil</a>
-
+                    <a href="${pageContext.request.contextPath}/nouvellevente">Vendre</a>
+                    <a href="${pageContext.request.contextPath}/profil">Profil</a>
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a>
@@ -38,23 +36,34 @@
                 <br>
                 <label for="categories">Catégorie :
                 <select id="categories" name="categories">
-                    <option value="toutes">Toutes</option>
-                    <option  value="informatique">Informatique</option>
-                    <option value="ameublement">Ameublement</option>
-                    <option value="vetement">Vêtement</option>
-                    <option value="sportloisir">Sport&Loisirs</option>
+                    <option value="toutes" selected>Toutes</option>
+                    <option  value="Informatique">Informatique</option>
+                    <option value="Ameublement">Ameublement</option>
+                    <option value="Vêtements">Vêtement</option>
+                    <option value="Sport&Loisirs">Sport&Loisirs</option>
                 </select>
                 </label>
                 <br>
                 <input type="submit" value="Rechercher">
             </form>
             <c:url value="/profil" var="profil">
-                <c:param name="pseudo" value="lolo"/>
+                <c:param name="pseudo" value="lolo93130"/>
             </c:url>
             <a href="<c:out value="${profil}"/>">lolo</a>
         </div>
         <div class="search-results">
+            <c:forEach items="${allArticles}" var="element">
 
+                <p><strong>${element.getArtName()}</strong></p>
+                    <p>Prix : ${element.getStartPrice()} points</p>
+                    <p>Fin de l'enchère : ${element.endAucToLocalDate()}</p>
+                    <p>Vendeur : ${element.getSeller().getPseudo()}</p>
+                <br><br>
+
+            </c:forEach>
+            <c:if test="${empty allArticles && search}">
+                <p>Aucun résultat</p>
+            </c:if>
         </div>
 
     </body>
