@@ -37,10 +37,10 @@
                 <label for="categories">Catégorie :
                 <select id="categories" name="categories">
                     <option value="toutes" selected>Toutes</option>
-                    <option  value="informatique">Informatique</option>
-                    <option value="ameublement">Ameublement</option>
-                    <option value="vetement">Vêtement</option>
-                    <option value="sportloisir">Sport&Loisirs</option>
+                    <option  value="Informatique">Informatique</option>
+                    <option value="Ameublement">Ameublement</option>
+                    <option value="Vêtements">Vêtement</option>
+                    <option value="Sport&Loisirs">Sport&Loisirs</option>
                 </select>
                 </label>
                 <br>
@@ -61,6 +61,9 @@
                 <br><br>
 
             </c:forEach>
+            <c:if test="${empty allArticles && search}">
+                <p>Aucun résultat</p>
+            </c:if>
         </div>
 
     </body>

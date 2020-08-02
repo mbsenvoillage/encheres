@@ -22,6 +22,14 @@ public class SaleManager {
         return articleforSale.selectAllArticles();
     }
 
+    public List<articleBean> displayArticlesSelectByName(String name) throws BusinessException {
+        return articleforSale.selectArticlesByName(name);
+    }
+
+    public List<articleBean> displayArticlesSelectByNameAndCat(String name, String cat) throws BusinessException {
+        return articleforSale.selectArticlesByNameAndCat(name, cat);
+    }
+
 
     public articleBean addArticleForSale(Map parametres, articleBean article, userBean user) throws BusinessException {
         BusinessException bizEx = new BusinessException();

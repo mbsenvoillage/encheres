@@ -16,6 +16,77 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     private final String INSERT_NEW_ARTICLE = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie, etat_vente) values (?, ?, ?, ?, ?, ?, ?, ?)";
     private final String SELECT_CAT_BY_NAME = "select no_categorie from categories where libelle = ?";
     private final String SELECT_ALL_ARTICLES = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur";
+    private final String SELECT_ARTICLE_BY_NAME = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur where a.nom_article = ?";
+    private final String SELECT_ARTICLE_BY_NAME_AND_CAT = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur where a.nom_article = ? and no_categorie = ?";
+
+
+    public List<articleBean> selectArticlesByNameAndCat(String name, String categorie) throws BusinessException {
+
+        if(name == null || categorie == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        List<articleBean> articles = new ArrayList<articleBean>();
+
+
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            // On récupère le numero de la categorie
+
+            int no_cat = this.selectCatByName(categorie);
+
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_ARTICLE_BY_NAME_AND_CAT);
+
+            stmt.setString(1, name);
+            stmt.setInt(2, no_cat);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                articles.add(articleBuilder(rs));
+            }
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        return articles;
+    }
+
+    public List<articleBean> selectArticlesByName(String name) throws BusinessException {
+        List<articleBean> articles = new ArrayList<articleBean>();
+
+
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_ARTICLE_BY_NAME);
+
+            stmt.setString(1, name);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                articles.add(articleBuilder(rs));
+            }
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        return articles;
+    }
 
 
     public List<articleBean> selectAllArticles() throws BusinessException {
