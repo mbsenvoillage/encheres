@@ -25,6 +25,7 @@ import java.util.Map;
 @WebServlet("/nouvellevente")
 public class ServletUpForSale extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         SaleManager saleManager = new SaleManager();
         articleBean article = new articleBean();
         List<Integer> errorList = new ArrayList<>();
@@ -36,6 +37,7 @@ public class ServletUpForSale extends HttpServlet {
         HttpSession session = request.getSession();
         userBean user = new userBean();
         user = (userBean) session.getAttribute("user");
+
 
         // On récupère l'ensemble des paramètres
 
@@ -98,7 +100,17 @@ public class ServletUpForSale extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
-        rd.forward(request, response);
+
+        HttpSession session = request.getSession();
+        userBean user = (userBean) request.getAttribute("user");
+
+
+        if (user == null) {
+            response.sendRedirect(request.getContextPath()+"/signup");
+        } else {
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
+            rd.forward(request, response);
+        }
+
     }
 }

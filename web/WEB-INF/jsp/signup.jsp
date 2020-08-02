@@ -27,12 +27,12 @@
                 <label for="mdp">Mot de passe : <input type="password" id="mdp" name="mdp"></label>
                 <label for="confirmation">Confirmation : <input type="password" id="confirmation" name="confirmation"></label><br><br>
                 <input type="submit" value="Créer">
+            </form>
+
+            <form action="${pageContext.request.contextPath}/accueil" method="get">
                 <input type="submit" name="cancelbtn" value="Annuler">
             </form>
 
-            <c:if test="${param.cancelbtn == 'Annuler'}">
-                <c:redirect url="/accueil"/>
-            </c:if>
             <%
                 List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
                 if (errorList != null)

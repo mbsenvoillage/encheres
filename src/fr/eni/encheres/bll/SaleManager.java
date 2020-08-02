@@ -64,7 +64,7 @@ public class SaleManager {
      */
 
     private void dateIsValid(LocalDateTime startdate, LocalDateTime endDate, BusinessException bizex) {
-        if (startdate == null || endDate == null || startdate.isBefore(LocalDateTime.now().plusMinutes(10)) || endDate.isBefore(startdate)) {
+        if (startdate == null || endDate == null || startdate.isBefore(LocalDateTime.now().minusMinutes(10)) || endDate.isBefore(startdate)) {
             bizex.addError(CodesErreurBLL.ERREUR_DATE);
         }
     }

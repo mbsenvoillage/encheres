@@ -25,6 +25,7 @@
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a>
+                    <a href="${pageContext.request.contextPath}/nouvellevente">Vendre</a>
                 </c:otherwise>
             </c:choose>
         </header>

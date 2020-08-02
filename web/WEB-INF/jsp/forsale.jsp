@@ -24,10 +24,10 @@
                         <label for="description">Description : <textarea name="description" cols="20" rows="5" >${article.getArtDescrip()}</textarea></label><br><br>
                         <label for="categorie"> Catégorie
                             <select name="categorie" >
-                                <option value="informatique" <c:if test="${article.getArtName() == 'Informatique'}">selected</c:if> >Informatique</option>
-                                <option value="ameublement" <c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if>>Ameublement</option>
-                                <option value="vetement" <c:if test="${article.getArtName() == 'Vetements'}">selected</c:if>>Vêtement</option>
-                                <option value="sportloisir" <c:if test="${article.getArtName() == 'Sport & Loisirs'}">selected</c:if>>Sport&Loisir</option>
+                                <option value="Informatique" <c:if test="${article.getArtName() == 'Informatique'}">selected</c:if> >Informatique</option>
+                                <option value="Ameublement" <c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if>>Ameublement</option>
+                                <option value="Vêtements" <c:if test="${article.getArtName() == 'Vetements'}">selected</c:if>>Vêtement</option>
+                                <option value="Sport&Loisirs" <c:if test="${article.getArtName() == 'Sport & Loisirs'}">selected</c:if>>Sport&Loisir</option>
                             </select>
                         </label><br><br>
                         <label for="photo">Photo de l'article <button name="photo">UPLOADER</button></label><br><br>
@@ -60,7 +60,7 @@
                                 <option value="Informatique">Informatique</option>
                                 <option value="Ameublement">Ameublement</option>
                                 <option value="Vetements">Vêtement</option>
-                                <option value="Sport & Loisirs">Sport&Loisir</option>
+                                <option value="Sport&Loisirs">Sport&Loisirs</option>
                             </select>
                         </label><br><br>
                         <label for="photo">Photo de l'article <button id="photo">UPLOADER</button></label><br><br>
