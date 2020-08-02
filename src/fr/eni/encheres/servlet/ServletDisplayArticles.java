@@ -34,19 +34,35 @@ public class ServletDisplayArticles extends HttpServlet {
         keyword = request.getParameter("keyword");
         categorie = request.getParameter("categories");
 
-        if ((keyword == null  || keyword.trim().isEmpty()) && categorie.equals("toutes")) {
-            try {
-                allArticles = saleManager.displayAllArticles();
-                request.setAttribute("allArticles", allArticles);
-                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
-                rd.forward(request, response);
-            } catch (BusinessException e) {
-                e.printStackTrace();
-                request.setAttribute("errorList", e.getErrorList());
-                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
-                rd.forward(request, response);
+        // S'il n'y a pas de mot de recherche, soit on affiche toutes les annonces, soit on affiche les résultats par caté
+        if (keyword == null || keyword.trim().isEmpty()) {
+            if (categorie.equals("toutes")) {
+                try {
+                    allArticles = saleManager.displayAllArticles();
+                    request.setAttribute("allArticles", allArticles);
+                    RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
+                    rd.forward(request, response);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                    request.setAttribute("errorList", e.getErrorList());
+                    RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
+                    rd.forward(request, response);
+                }
+            } else {
+                try {
+                    allArticles = saleManager.displayArticlesSelectByCat(categorie);
+                    request.setAttribute("allArticles", allArticles);
+                    RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
+                    rd.forward(request, response);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                    request.setAttribute("errorList", e.getErrorList());
+                    RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
+                    rd.forward(request, response);
+                }
             }
-        } else if (keyword != null && categorie.equals("toutes")) {
+            // S'il y a un mot de recherche, il est soit combiné avec une catégorie ou non
+        } else if (categorie.equals("toutes")) {
             try {
                 allArticles = saleManager.displayArticlesSelectByName(keyword);
                 request.setAttribute("allArticles", allArticles);

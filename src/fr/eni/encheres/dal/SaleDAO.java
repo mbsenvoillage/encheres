@@ -19,5 +19,5 @@ public interface SaleDAO {
 
     public List<articleBean> selectArticlesByNameAndCat(String name, String categorie) throws BusinessException;
 
-
+    public List<articleBean> selectArticlesByCat(String categorie) throws BusinessException;
 }

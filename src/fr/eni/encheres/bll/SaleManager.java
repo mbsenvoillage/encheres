@@ -6,17 +6,20 @@ import fr.eni.encheres.bo.articleBean;
 import fr.eni.encheres.bo.userBean;
 import fr.eni.encheres.dal.DAOFactory;
 import fr.eni.encheres.dal.SaleDAO;
-
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+
 public class SaleManager {
+
     private SaleDAO articleforSale;
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
+
+    public List<articleBean> displayArticlesSelectByCat(String cat) throws BusinessException {
+        return articleforSale.selectArticlesByCat(cat);
+    }
 
     public List<articleBean> displayAllArticles() throws BusinessException {
         return articleforSale.selectAllArticles();
