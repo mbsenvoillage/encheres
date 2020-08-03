@@ -17,12 +17,16 @@ public class SaleManager {
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
 
+    public List<articleBean> displayUserArticlesForSale(Integer userNb) throws BusinessException {
+        return articleforSale.selectArticlesBySeller(userNb);
+    }
+
     public List<articleBean> displayArticlesSelectByCat(String cat) throws BusinessException {
         return articleforSale.selectArticlesByCat(cat);
     }
 
-    public List<articleBean> displayAllArticles() throws BusinessException {
-        return articleforSale.selectAllArticles();
+    public List<articleBean> displayAllArticles(String name, String cat, String status) throws BusinessException {
+        return articleforSale.selectAllArticles(name, cat, status);
     }
 
     public List<articleBean> displayArticlesSelectByName(String name) throws BusinessException {

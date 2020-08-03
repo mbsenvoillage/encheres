@@ -14,7 +14,7 @@ public class biddingBean implements Serializable {
     // CONSTRUCTOR
 
     public biddingBean() {
-        artForSale = new articleBean();
+        //artForSale = new articleBean();
         seller = new userBean();
     }
 

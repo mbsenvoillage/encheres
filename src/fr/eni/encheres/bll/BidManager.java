@@ -15,4 +15,8 @@ public class BidManager {
     public List<biddingBean> displayOnGoingBids(int buyerId) throws BusinessException {
         return bids.selectMyOnGoingBids(buyerId);
     }
+
+    public List<biddingBean> displayAllOnGoingAucs() throws BusinessException {
+        return bids.selectAllOnGoingAucs();
+    }
 }

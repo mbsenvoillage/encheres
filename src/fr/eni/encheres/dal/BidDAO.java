@@ -8,4 +8,6 @@ import java.util.List;
 public interface BidDAO {
 
     public List<biddingBean> selectMyOnGoingBids(int buyerId) throws BusinessException;
+
+    public List<biddingBean> selectAllOnGoingAucs() throws BusinessException;
 }

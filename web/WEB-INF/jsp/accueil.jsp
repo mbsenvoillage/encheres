@@ -48,10 +48,10 @@
                             </select>
                         </label>
                         <br>
-                        <label for="achats">Achats<input type="radio" onclick="disableVentes()" name="searchcrit" value="achats" id="achats"></label>
-                        <label>enchères ouvertes <input type="checkbox" name="enchouv" value="enchouv" id="enchouv"></label>
-                        <label for="enchenc">mes enchères en cours <input type="checkbox" name="enchenc" value="enchenc" id="enchenc"></label>
-                        <label for="enchremp">mes enchères remportées <input type="checkbox" name="enchremp" value="enchremp" id="enchremp"></label>
+                        <label for="achats">Achats<input type="radio" onclick="disableVentes()" name="searchcrit" value="achats" id="achats" ></label>
+                        <label>enchères ouvertes <input type="checkbox" name="status" value="EC" id="enchouv"></label>
+                        <label for="enchenc">mes enchères en cours <input type="checkbox" name="status" value="EC" id="enchenc"></label>
+                        <label for="enchremp">mes enchères remportées <input type="checkbox" name="status" value="ET" id="enchremp"></label>
                         <br><br>
                         <label for="ventes">Mes ventes <input type="radio" onclick="disableAchats()" name="searchcrit" value="ventes" id="ventes"></label>
                         <label for="ventenc">mes ventes en cours <input type="checkbox" name="ventenc" value="ventenc" id="ventenc"></label>
@@ -130,7 +130,7 @@
                 </div>
             </c:otherwise>
         </c:choose>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
         <script>
             function disableVentes() {
                 document.getElementById("ventenc").disabled = true;
@@ -149,6 +149,13 @@
                 document.getElementById("ventnondeb").disabled = false;
                 document.getElementById("ventter").disabled = false;
             }
+
+            $(document).ready(function()
+            {
+                $('#ventenc').prop('disabled', true);
+                $('#ventnondeb').prop('disabled', true);
+                $('#ventter').prop('disabled', true);
+            });
         </script>
 
     </body>
