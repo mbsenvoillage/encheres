@@ -19,6 +19,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     private final String SELECT_ARTICLE_BY_NAME = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur where (a.nom_article = ? and etat_vente = 'EC')";
     private final String SELECT_ARTICLE_BY_NAME_AND_CAT = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur where a.nom_article = ? and no_categorie = ? and etat_vente = 'EC'";
     private final String SELECT_ARTICLE_BY_CAT = "select a.nom_article, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, U.pseudo, U.no_utilisateur from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur where no_categorie = ? and etat_vente = 'EC'";
+    private final String SELECT_ARTICLE_BY_SELLER = "select no_article, nom_article, description, date_fin_encheres, no_categorie, etat_vente from ARTICLES_VENDUS where no_utilisateur = ?";
 
 
     public List<articleBean> selectArticlesByCat(String categorie) throws BusinessException {

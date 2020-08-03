@@ -7,4 +7,6 @@ public abstract  class DAOFactory {
     }
 
     public static SaleDAO getSaleDAO() { return new SaleDAOJdbcImpl(); }
+
+    public static BidDAO getBidDAO() { return new BidDAOJdbcImpl(); };
 }
