@@ -17,27 +17,32 @@ public class SaleManager {
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
 
-    public List<articleBean> displayUserArticlesForSale(Integer userNb) throws BusinessException {
-        return articleforSale.selectArticlesBySeller(userNb);
+
+    // PERMET D'AFFICHER LES VENTES DE L'UTILISATEUR
+
+    public List<articleBean> displayUserArticlesForSale(Integer userNb, String name, String cat, String status) throws BusinessException {
+        return articleforSale.selectUserItemsForSale(userNb, name, cat, status);
     }
 
-    public List<articleBean> displayArticlesSelectByCat(String cat) throws BusinessException {
-        return articleforSale.selectArticlesByCat(cat);
-    }
+    // PERMET D'AFFICHER LES ARTICLES EN VENTE (selon le nom, la catégorie et le statut (CR, EC, ET))
 
     public List<articleBean> displayAllArticles(String name, String cat, String status) throws BusinessException {
         return articleforSale.selectAllArticles(name, cat, status);
     }
 
-    public List<articleBean> displayArticlesSelectByName(String name) throws BusinessException {
-        return articleforSale.selectArticlesByName(name);
+    // PERMET D'AFFICHER LES ENCHERES (selon l'enchérisseur, le nom, la catégorie et le statut)
+
+    public List<articleBean> displayAuctions(int userNb, String name, String cat, String status) throws BusinessException {
+        return articleforSale.selectOngoingAuctions(userNb, name, cat, status);
     }
 
-    public List<articleBean> displayArticlesSelectByNameAndCat(String name, String cat) throws BusinessException {
-        return articleforSale.selectArticlesByNameAndCat(name, cat);
+    // PERMET D'AFFICHER LES ENCHERES REMPORTEES PAR L'UTILISATEUR
+
+    public List<articleBean> displayUserWiningBids(Integer userNb, String name, String cat) throws BusinessException {
+        return articleforSale.selectUserWiningBids(userNb, name, cat);
     }
 
-
+    // PERMET DE METTRE A JOUR UN ARTICLE EN VENTE
     public articleBean addArticleForSale(Map parametres, articleBean article, userBean user) throws BusinessException {
         BusinessException bizEx = new BusinessException();
 

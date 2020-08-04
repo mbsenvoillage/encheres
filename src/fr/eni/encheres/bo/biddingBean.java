@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 public class biddingBean implements Serializable {
 
-    private articleBean artForSale;
     private userBean seller;
     private LocalDateTime bidDate;
     private int bidAmount;
@@ -14,19 +13,10 @@ public class biddingBean implements Serializable {
     // CONSTRUCTOR
 
     public biddingBean() {
-        //artForSale = new articleBean();
         seller = new userBean();
     }
 
     // GETTERS AND SETTERS
-
-    public articleBean getArtForSale() {
-        return artForSale;
-    }
-
-    public void setArtForSale(articleBean artForSale) {
-        this.artForSale = artForSale;
-    }
 
     public userBean getSeller() {
         return seller;

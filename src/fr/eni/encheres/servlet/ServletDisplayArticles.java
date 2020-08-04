@@ -1,12 +1,10 @@
 package fr.eni.encheres.servlet;
 
 import fr.eni.encheres.BusinessException;
-import fr.eni.encheres.bll.BidManager;
 import fr.eni.encheres.bll.SaleManager;
 import fr.eni.encheres.bo.articleBean;
 import fr.eni.encheres.bo.biddingBean;
 import fr.eni.encheres.bo.userBean;
-import fr.eni.encheres.util.sortResults;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,23 +26,19 @@ public class ServletDisplayArticles extends HttpServlet {
         String searchcrit = null;
         String status = null;
 
-
         SaleManager saleManager = new SaleManager();
-        BidManager bidManager = new BidManager();
 
         HttpSession session = request.getSession();
 
         request.setCharacterEncoding("UTF-8");
 
         List<articleBean> allArticles = new ArrayList<articleBean>();
-        List<biddingBean> bids = new ArrayList<>();
-        userBean user = new userBean();
 
         boolean search = true;
         request.setAttribute("search", true);
 
         // On récupère l'utilisateur s'il est connecté
-
+        userBean user = new userBean();
         user = (userBean) session.getAttribute("user");
 
         // On récupère les paramètres de recherche s'il y en a
@@ -53,110 +47,79 @@ public class ServletDisplayArticles extends HttpServlet {
         searchcrit = request.getParameter("searchcrit");
         status = request.getParameter("status");
 
+        // Si le critère de recherche et toutes, la catégorie reste vide
+        // Si aucun statut de vente n'est précisé, on considère que la recherche porte sur le statut EC
+
         if (categorie.equals("toutes")) {
             categorie = "";
         }
-        if (status.isEmpty()) {
+        if (status == null) {
             status = "EC";
         }
 
+        // Si les recherches portent sur les achats
 
-        if (searchcrit != null && searchcrit.equals("achats")) {
+        if (searchcrit != null) {
+            if (searchcrit.equals("achats")) {
+                if (status.equals("EC")) {
+                    try {
+                        allArticles = saleManager.displayAllArticles(keyword, categorie, status);
+                    } catch (BusinessException e) {
+                        e.printStackTrace();
+                        request.setAttribute("errorList", e.getErrorList());
+                    }
+                } else if (status.equals("MEC")) {
+                    try {
+                        status = "EC";
+                        allArticles = saleManager.displayAuctions(user.getUserNb(), keyword, categorie, status);
+                    } catch (BusinessException e) {
+                        e.printStackTrace();
+                        request.setAttribute("errorList", e.getErrorList());
+                    }
+                } else {
+                    try {
+                        allArticles = saleManager.displayUserWiningBids(user.getUserNb(), keyword, categorie);
+                    } catch (BusinessException e) {
+                        e.printStackTrace();
+                        request.setAttribute("errorList", e.getErrorList());
+                    }
+                }
+                // SI LES RECHERCHES PORTENT SUR LES VENTES
+            } else if (searchcrit.equals("ventes")) {
+                try {
+                    allArticles = saleManager.displayUserArticlesForSale(user.getUserNb(), keyword, categorie, status);
+                    request.setAttribute("allArticles", allArticles);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                    request.setAttribute("errorList", e.getErrorList());
+                }
+            }
+            // SI LE VISITEUR N'A PAS DE COMPTE OU EST DECONNECTE
+        } else {
             try {
-                System.out.println("We should be here");
                 allArticles = saleManager.displayAllArticles(keyword, categorie, status);
-                System.out.println(keyword + " " + categorie + " " +status);
-
             } catch (BusinessException e) {
                 e.printStackTrace();
-                request.setAttribute("errorList", e.getErrorList());
             }
-
-        } else { // ie. IF SEARCHCRIT = VENTES
-            if (request.getParameter("ventenc") != null) {
-                try {
-                    allArticles = saleManager.displayUserArticlesForSale(user.getUserNb());
-                    request.setAttribute("allArticles", allArticles);
-                } catch (BusinessException e) {
-                    e.printStackTrace();
-                    request.setAttribute("errorList", e.getErrorList());
-                }
-            } else if (request.getParameter("ventnondeb") != null) {
-                try {
-                    allArticles = sortResults.getUserNonStartedSales(saleManager.displayUserArticlesForSale(user.getUserNb()));
-                    request.setAttribute("allArticles", allArticles);
-                } catch (BusinessException e) {
-                    e.printStackTrace();
-                    request.setAttribute("errorList", e.getErrorList());
-                }
-            } else {
-                try {
-                    allArticles = sortResults.getUserFinishedSales(saleManager.displayUserArticlesForSale(user.getUserNb()));
-                } catch (BusinessException e) {
-                    e.printStackTrace();
-                    request.setAttribute("errorList", e.getErrorList());
-                }
-            }
+            System.out.println(keyword + " " + categorie + " " + status);
         }
-
-        /*if (categorie != null) {
-            if (!allArticles.isEmpty()) {
-                allArticles = sortResults.filterArticlesByCat(allArticles, categorie);
-            }
-            if (!bids.isEmpty()) {
-                bids = sortResults.filterBidsByCat(bids, categorie);
-            }
-        }
-
-        if (keyword != null) {
-            if (!allArticles.isEmpty()) {
-                allArticles = sortResults.filterArticlesByKeyword(allArticles, keyword);
-            }
-            if (!bids.isEmpty()) {
-                bids = sortResults.filterBidsByKeyword(bids, keyword);
-            }
-        }
-
-         */
 
         if (!allArticles.isEmpty()) {
             request.setAttribute("allArticles", allArticles);
-        }
-        if (!bids.isEmpty()) {
-            request.setAttribute("bids", bids);
+        } else {
+            System.out.println("La liste d'article est vide ");
         }
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
         rd.forward(request, response);
-
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
         RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/accueil");
         rd.forward(request, response);
     }
 }
 
 
-/*
- if (request.getParameter("enchouv") != null) {
 
-            } else if (request.getParameter("enchenc") != null) {
-                try {
-                    bids = sortResults.getBidsForOngoingAuc(bidManager.displayOnGoingBids(user.getUserNb()));
-
-                } catch (BusinessException e) {
-                    e.printStackTrace();
-                    request.setAttribute("errorList", e.getErrorList());
-                }
-
-            } else  { // ie. l'utilisateur veut connaître les enchères qu'il a remportées
-                try {
-                    bids = sortResults.getAuctionWins(bidManager.displayOnGoingBids(user.getUserNb()));
-                    request.setAttribute("bids", bids);
-                } catch (BusinessException e) {
-                    e.printStackTrace();
-                    request.setAttribute("errorList", e.getErrorList());
-                }
-            }
- */

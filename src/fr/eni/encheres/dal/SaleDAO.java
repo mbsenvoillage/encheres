@@ -13,17 +13,13 @@ public interface SaleDAO {
 
     public int selectCatByName(String cat) throws BusinessException;
 
-    // public List<articleBean> selectAllArticles() throws BusinessException;
-
-    public List<articleBean> selectArticlesByName(String name) throws BusinessException;
-
-    public List<articleBean> selectArticlesByNameAndCat(String name, String categorie) throws BusinessException;
-
-    public List<articleBean> selectArticlesByCat(String categorie) throws BusinessException;
-
-    public List<articleBean> selectArticlesBySeller(Integer userNb) throws BusinessException;
-
     public List<articleBean> selectAllArticles(String name, String cat, String status) throws BusinessException;
+
+    public List<articleBean> selectOngoingAuctions(int userNb, String name, String cat, String status) throws BusinessException;
+
+    public List<articleBean> selectUserWiningBids(Integer userNb, String name, String cat) throws BusinessException;
+
+    public List<articleBean> selectUserItemsForSale(Integer userNb, String name, String cat, String status) throws BusinessException;
 
 
 }
