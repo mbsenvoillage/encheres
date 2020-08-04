@@ -30,42 +30,77 @@
             </c:choose>
         </header>
         <h2>Liste des enchères</h2>
+
         <div class="search-bar">
             <h3>Filtres</h3>
             <form action="${pageContext.request.contextPath}/search" method="post">
                 <input type="text" name="keyword">
                 <br>
                 <label for="categories">Catégorie :
-                <select id="categories" name="categories">
-                    <option value="toutes" selected>Toutes</option>
-                    <option  value="Informatique">Informatique</option>
-                    <option value="Ameublement">Ameublement</option>
-                    <option value="Vêtements">Vêtement</option>
-                    <option value="Sport&Loisirs">Sport&Loisirs</option>
-                </select>
+                    <select name="categories" id="categories">
+                        <option value="toutes" selected>Toutes</option>
+                        <option  value="Informatique">Informatique</option>
+                        <option value="Ameublement">Ameublement</option>
+                        <option value="Vêtements">Vêtement</option>
+                        <option value="Sport&Loisirs">Sport&Loisirs</option>
+                    </select>
                 </label>
                 <br>
+                <c:if test="${user != null}">
+                    <label for="achats">Achats<input type="radio" onclick="disableVentes()" name="searchcrit" value="achats" id="achats" checked></label>
+                    <label>enchères ouvertes <input type="checkbox" name="status" value="EC" id="enchouv"></label>
+                    <label for="enchenc">mes enchères en cours <input type="checkbox" name="status" value="MEC" id="enchenc"></label>
+                    <label for="enchremp">mes enchères remportées <input type="checkbox" name="status" value="MER" id="enchremp"></label>
+                    <br><br>
+                    <label for="ventes">Mes ventes <input type="radio" onclick="disableAchats()" name="searchcrit" value="ventes" id="ventes"></label>
+                    <label for="ventenc">mes ventes en cours <input type="checkbox" name="status" value="EC" id="ventenc"></label>
+                    <label for="ventnondeb">ventes non débutées <input type="checkbox" name="status" value="CR" id="ventnondeb"></label>
+                    <label for="ventter">ventes terminées <input type="checkbox" name="status" value="ET" id="ventter"></label>
+                    <br><br>
+                </c:if>
                 <input type="submit" value="Rechercher">
             </form>
-            <c:url value="/profil" var="profil">
-                <c:param name="pseudo" value="lolo93130"/>
-            </c:url>
-            <a href="<c:out value="${profil}"/>">lolo</a>
         </div>
         <div class="search-results">
             <c:forEach items="${allArticles}" var="element">
-
-                <p><strong>${element.getArtName()}</strong></p>
-                    <p>Prix : ${element.getStartPrice()} points</p>
-                    <p>Fin de l'enchère : ${element.endAucToLocalDate()}</p>
-                    <p>Vendeur : ${element.getSeller().getPseudo()}</p>
-                <br><br>
-
+            <p><strong>${element.getArtName()}</strong></p>
+            <p>Prix : ${element.getStartPrice()} points</p>
+            <p>Fin de l'enchère : ${element.endAucToLocalDate()}</p>
+            <p>Vendeur : Vendeur : <a href="${pageContext.request.contextPath}/profil?pseudo=${element.getSeller().getPseudo()}">${element.getSeller().getPseudo()}</a></p>
+            <br><br>
             </c:forEach>
-            <c:if test="${empty allArticles && search}">
+            <c:if test="${(empty allArticles) && search}">
                 <p>Aucun résultat</p>
             </c:if>
         </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+            function disableVentes() {
+                document.getElementById("ventenc").disabled = true;
+                document.getElementById("ventnondeb").disabled = true;
+                document.getElementById("ventter").disabled = true;
+                document.getElementById("enchouv").disabled = false;
+                document.getElementById("enchenc").disabled = false;
+                document.getElementById("enchremp").disabled = false;
+            }
+
+            function disableAchats() {
+                document.getElementById("enchouv").disabled = true;
+                document.getElementById("enchenc").disabled = true;
+                document.getElementById("enchremp").disabled = true;
+                document.getElementById("ventenc").disabled = false;
+                document.getElementById("ventnondeb").disabled = false;
+                document.getElementById("ventter").disabled = false;
+            }
+
+            $(document).ready(function()
+            {
+                $('#ventenc').prop('disabled', true);
+                $('#ventnondeb').prop('disabled', true);
+                $('#ventter').prop('disabled', true);
+            });
+        </script>
 
     </body>
 </html>

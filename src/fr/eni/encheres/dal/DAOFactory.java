@@ -7,4 +7,5 @@ public abstract  class DAOFactory {
     }
 
     public static SaleDAO getSaleDAO() { return new SaleDAOJdbcImpl(); }
+
 }

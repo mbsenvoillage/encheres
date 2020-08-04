@@ -93,7 +93,6 @@
                         </form>
                     </c:otherwise>
                 </c:choose>
-
             </div>
         </main>
     </body>

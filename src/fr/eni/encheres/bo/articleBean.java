@@ -18,12 +18,14 @@ public class articleBean implements Serializable {
     private Category category;
     private String saleStatus;
     private userBean seller;
+    private biddingBean bid;
 
 
     public articleBean() {
         seller = new userBean();
         category = new Category();
         pickUp = new PickUp();
+        bid = new biddingBean();
     }
 
     public int getArtNb() {
@@ -120,5 +122,9 @@ public class articleBean implements Serializable {
 
     public LocalDate endAucToLocalDate() {
         return this.endAuc.toLocalDate();
+    }
+
+    public biddingBean getBid() {
+        return bid;
     }
 }
