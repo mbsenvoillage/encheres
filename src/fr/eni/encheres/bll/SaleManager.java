@@ -1,11 +1,12 @@
 package fr.eni.encheres.bll;
 
 import fr.eni.encheres.BusinessException;
-import fr.eni.encheres.bo.Category;
-import fr.eni.encheres.bo.articleBean;
-import fr.eni.encheres.bo.userBean;
+import fr.eni.encheres.bo.*;
 import fr.eni.encheres.dal.DAOFactory;
 import fr.eni.encheres.dal.SaleDAO;
+import fr.eni.encheres.dal.UserDAO;
+
+import java.awt.geom.PathIterator;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,34 @@ public class SaleManager {
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
 
-    // PERMET D'AFFICHER LE DÉTAIL D'UNE ENCHERE, AFIN QU'UN UTILISATEUR PUISSE FAIRE UNE OFFRE
+    // PERMET D'AFFICHER LE DETAIL D'UNE ENCHERE
 
-    public articleBean displayAucDetail(String name) throws BusinessException {
-        return articleforSale.selectAuctionArticle(name);
+    public articleBean auctionDetail(String artName) throws BusinessException {
+        articleBean article = new articleBean();
+        article = articleforSale.detailAuction(artName);
+
+        if (articleforSale.selectHighestBidder(artName) != null) {
+            article.setBid(articleforSale.selectHighestBidder(artName));
+        }
+        return article;
+    }
+
+    // PERMET DE CONNAITRE LE BALANCE DES COMPTES DE L'UTILISATEUR
+
+    public int getAccountBalance(int userNb) throws BusinessException {
+        return articleforSale.checkUserCredit(userNb);
+    }
+
+    // PERMET DE METTRE A JOUR LE PRIX DE VENTE D'UN ARTICLE APRES NOUVELLE ENCHERE
+
+    public void updateSalePrice(int price, int artNb) throws BusinessException {
+        articleforSale.updateArtSalePrice(price, artNb);
+    }
+
+    // PERMET D'AJOUTER UNE NOUVELLE ENCHERE
+
+    public biddingBean placeBid(biddingBean bid) throws BusinessException {
+        return articleforSale.insertBid(bid);
     }
 
     // PERMET D'AFFICHER LES VENTES DE L'UTILISATEUR
@@ -73,6 +98,12 @@ public class SaleManager {
         }
 
         return article;
+    }
+
+    // PERMET D'AJOUTER UNE ADDRESSE DE RETRAIT SUITE A UN DEPOS D'ANNONCE
+
+    public void addPickUpAddress(PickUp retrait, int artNb) throws BusinessException {
+        articleforSale.insertRetrait(retrait, artNb);
     }
 
     /*

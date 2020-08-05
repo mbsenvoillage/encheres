@@ -19,20 +19,27 @@ public abstract class SqlStatements {
             "where A.no_utilisateur = ? and AV.etat_vente = 'ET'\n" +
             "group by A.no_article, A.no_utilisateur, AV.nom_article, AV.description, A.max, U.pseudo, AV.date_fin_encheres";
 
-    /*public static String SELECT_AUCTION_ARTICLE = "select a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, a.etat_vente, r.rue, r.code_postal, r.ville, u.pseudo as 'seller' from ARTICLES_VENDUS a\n" +
-            "inner join utilisateurs u on a.no_utilisateur = u.no_utilisateur\n" +
-            "inner join CATEGORIES C on C.no_categorie = a.no_categorie\n" +
-            "inner join RETRAITS R on a.no_article = R.no_article\n" +
-            "where nom_article = ?";*/
+    public static String INSERT_NEW_BID = "insert into ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) values (?, ?, ?, ?);";
 
-    public static String SELECT_AUCTION_ARTICLE = "select a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo as 'seller', b.pseudo as 'buyer', a.etat_vente from ARTICLES_VENDUS a\n" +
-            "inner join utilisateurs u on a.no_utilisateur = u.no_utilisateur\n" +
-            "inner join CATEGORIES C on C.no_categorie = a.no_categorie\n" +
-            "inner join RETRAITS R on a.no_article = R.no_article\n" +
-            "inner join ENCHERES e on a.no_article = E.no_article\n" +
-            "inner join UTILISATEURS b on e.no_utilisateur = b.no_utilisateur\n" +
-            "where nom_article = ? and e.montant_enchere = a.prix_vente\n" +
-            "group by a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo, b.pseudo, a.etat_vente";
+    public static String UPDATE_USER_CREDIT = "update UTILISATEURS set credit = credit + ? where no_utilisateur = ?";
+
+    public static String UPDATE_ARTICLE_SALE_PRICE = "update ARTICLES_VENDUS set prix_vente = ? where no_article = ?";
+
+    public static String CHECK_USER_CREDIT = "select credit from UTILISATEURS where no_utilisateur = ?";
+
+    public static String SELECT_AUCTION_DETAIL = "select a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo as 'seller', a.etat_vente, a.no_article from ARTICLES_VENDUS a\n" +
+            "left join utilisateurs u on a.no_utilisateur = u.no_utilisateur\n" +
+            "left join CATEGORIES C on C.no_categorie = a.no_categorie\n" +
+            "left join RETRAITS R on a.no_article = R.no_article\n" +
+            "where nom_article = ?\n" +
+            "group by a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo, a.etat_vente, a.no_article";
+
+    public static String SELECT_HIGHEST_BIDDER = "select e.montant_enchere as 'highest bid', e.no_utilisateur, u.pseudo as 'buyer', e.date_enchere from ARTICLES_VENDUS a\n" +
+            "inner join ENCHERES E on a.no_article = E.no_article\n" +
+            "inner join UTILISATEURS U on U.no_utilisateur = e.no_utilisateur\n" +
+            "where a.nom_article = ? and a.prix_vente = e.montant_enchere";
+
+    public static String INSERT_PICKUP_DETAIL = "insert into RETRAITS (no_article, rue, code_postal, ville) values (?, ?, ?, ?)";
 
     public static String byName =  " where a.nom_article = ?";
     public static String byCat = " where a.no_categorie = ?";

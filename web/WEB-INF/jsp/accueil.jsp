@@ -63,7 +63,7 @@
                 <p><strong><a <c:if test="${user != null}">href="${pageContext.request.contextPath}/enchere?article=${element.getArtName()}"</c:if>>${element.getArtName()}</a></strong></p>
             <p>Prix : ${element.getStartPrice()} points</p>
             <p>Fin de l'enchère : ${element.endAucToLocalDate()}</p>
-            <p>Vendeur : Vendeur : <a href="${pageContext.request.contextPath}/profil?pseudo=${element.getSeller().getPseudo()}">${element.getSeller().getPseudo()}</a></p>
+            <p>Vendeur : <a href="${pageContext.request.contextPath}/profil?pseudo=${element.getSeller().getPseudo()}">${element.getSeller().getPseudo()}</a></p>
             <br><br>
             </c:forEach>
             <c:if test="${(empty allArticles) && search}">

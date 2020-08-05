@@ -2,10 +2,13 @@ package fr.eni.encheres.messages;
 
 // Permet de lire les messages d'erreur du fichier error_messages.properties
 
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
-public abstract class LecteurMessage {
+public abstract class LecteurMessage implements Serializable {
     private static ResourceBundle rb;
+
+    
 
     static {
         try {

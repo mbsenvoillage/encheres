@@ -11,11 +11,38 @@ import java.util.List;
 
 public class SaleDAOJdbcImpl implements SaleDAO {
 
-    public articleBean selectAuctionArticle(String artName) throws BusinessException {
+    public biddingBean selectHighestBidder(String artName) throws BusinessException {
+        biddingBean bid = new biddingBean();
+
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+            PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_HIGHEST_BIDDER);
+            System.out.println(SqlStatements.SELECT_HIGHEST_BIDDER);
+            stmt.setString(1, artName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                bid.setBidAmount(rs.getInt("highest bid"));
+                bid.setBuyerId(rs.getInt("no_utilisateur"));
+                bid.setBuyerName(rs.getString("buyer"));
+                bid.setBidDate(rs.getTimestamp("date_enchere").toLocalDateTime());
+            }
+
+        } catch (SQLException throwables) {
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+        return bid;
+    }
+
+
+    public articleBean detailAuction(String artName) throws BusinessException {
         articleBean article = new articleBean();
         try (Connection cnx = ConnectionWizard.getConnection()) {
-            PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_AUCTION_ARTICLE);
-            System.out.println(SqlStatements.SELECT_AUCTION_ARTICLE);
+            PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_AUCTION_DETAIL);
+            System.out.println(SqlStatements.SELECT_AUCTION_DETAIL);
             stmt.setString(1, artName);
             ResultSet rs = stmt.executeQuery();
 
@@ -32,6 +59,106 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
         System.out.println(article.toString());
         return article;
+    }
+
+    public int checkUserCredit(int userNb) throws BusinessException {
+        int credit = 0;
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+            PreparedStatement stmt = cnx.prepareStatement(SqlStatements.CHECK_USER_CREDIT);
+            stmt.setInt(1, userNb);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                credit = rs.getInt("credit");
+            }
+
+        } catch (SQLException throwables) {
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+        return credit;
+    }
+
+    public void updateArtSalePrice(int price, int artNb) throws BusinessException {
+        // tente d'ouvrir une connection à la BDD
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.UPDATE_ARTICLE_SALE_PRICE);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, price);
+                stmt.setInt(2, artNb);
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_UPDATE_DB);
+            throw bizEx;
+        }
+
+    }
+
+    public biddingBean insertBid(biddingBean bid) throws BusinessException {
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if (bid == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        // tente d'ouvrir une connection à la BDD
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.INSERT_NEW_BID);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, bid.getBuyerId());
+                stmt.setInt(2, bid.getArtNb());
+                stmt.setTimestamp(3, Timestamp.valueOf(bid.getBidDate()));
+                stmt.setInt(4, bid.getBidAmount());
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_INSERT_OBJECT);
+            throw bizEx;
+        }
+
+
+        return bid;
     }
 
     public List<articleBean> selectUserItemsForSale(Integer userNb, String name, String cat, String status) throws BusinessException {
@@ -380,6 +507,49 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         return allArticles;
     }
 
+    public void insertRetrait(PickUp retrait, int artNb) throws BusinessException {
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if (retrait == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+
+        // tente d'ouvrir une connection à la BDD
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.INSERT_PICKUP_DETAIL);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, artNb);
+                stmt.setString(2, retrait.getRue());
+                stmt.setString(3, retrait.getCpo());
+                stmt.setString(4, retrait.getVille());
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_INSERT_OBJECT);
+            throw bizEx;
+        }
+    }
+
 
     // PERMET D'INSÉRER UN ARTICLE DANS LA BASE DE DONNÉES
 
@@ -447,6 +617,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
     // PERMET DE DETERMINER LE NO D'UNE CATEGORIE A PARTIR DE SON NOM
+
     public int selectCatByName(String cat) throws BusinessException {
 
         int catId = 0;
@@ -485,6 +656,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
     // PERMET DE DÉTERMINER LE STATUT DE VENTE
+
+
     private String setAucStatus(LocalDateTime start, LocalDateTime end) {
         String status = "";
         if (start.isAfter(LocalDateTime.now())) {
@@ -524,19 +697,36 @@ public class SaleDAOJdbcImpl implements SaleDAO {
 
 
 
-        if (cols > 10) {
+        if (cols > 12) {
             article.setArtName(rs.getString("nom_article"));
             article.setArtDescrip(rs.getString("description"));
             article.getCategory().setCatName(rs.getString("libelle"));
             article.setSalePrice(rs.getInt("prix_vente"));
             article.setStartPrice(rs.getInt("prix_initial"));
             article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            System.out.println(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
             article.getPickUp().setRue(rs.getString("rue"));
             article.getPickUp().setCpo(rs.getString("code_postal"));
             article.getPickUp().setVille(rs.getString("ville"));
             article.getSeller().setPseudo(rs.getString("seller"));
             article.getBid().setBuyerName(rs.getString("buyer"));
             article.setSaleStatus(rs.getString("etat_vente"));
+            article.setArtNb(rs.getInt("no_article"));
+            article.getBid().setBuyerId(rs.getInt("no_utilisateur"));
+        } else if (cols > 10 ) {
+            article.setArtName(rs.getString("nom_article"));
+            article.setArtDescrip(rs.getString("description"));
+            article.getCategory().setCatName(rs.getString("libelle"));
+            article.setSalePrice(rs.getInt("prix_vente"));
+            article.setStartPrice(rs.getInt("prix_initial"));
+            article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            System.out.println(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            article.getPickUp().setRue(rs.getString("rue"));
+            article.getPickUp().setCpo(rs.getString("code_postal"));
+            article.getPickUp().setVille(rs.getString("ville"));
+            article.getSeller().setPseudo(rs.getString("seller"));
+            article.setSaleStatus(rs.getString("etat_vente"));
+            article.setArtNb(rs.getInt("no_article"));
         } else {
             article.setArtName(rs.getString("nom_article"));
             article.setArtDescrip(rs.getString("description"));
@@ -544,6 +734,12 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
             article.getSeller().setPseudo(rs.getString("seller"));
         }
+
+
+
+
+
+
 
         return article;
     }
