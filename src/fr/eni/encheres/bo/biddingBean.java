@@ -9,6 +9,7 @@ public class biddingBean implements Serializable {
     private LocalDateTime bidDate;
     private int bidAmount;
     private int buyerId;
+    private String buyerName;
 
     // CONSTRUCTOR
 
@@ -48,5 +49,13 @@ public class biddingBean implements Serializable {
 
     public void setBuyerId(int buyerId) {
         this.buyerId = buyerId;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 }

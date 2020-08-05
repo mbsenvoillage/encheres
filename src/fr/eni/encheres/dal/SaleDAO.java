@@ -21,5 +21,5 @@ public interface SaleDAO {
 
     public List<articleBean> selectUserItemsForSale(Integer userNb, String name, String cat, String status) throws BusinessException;
 
-
+    public articleBean selectAuctionArticle(String artName) throws BusinessException;
 }

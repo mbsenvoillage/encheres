@@ -17,6 +17,11 @@ public class SaleManager {
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
 
+    // PERMET D'AFFICHER LE DÉTAIL D'UNE ENCHERE, AFIN QU'UN UTILISATEUR PUISSE FAIRE UNE OFFRE
+
+    public articleBean displayAucDetail(String name) throws BusinessException {
+        return articleforSale.selectAuctionArticle(name);
+    }
 
     // PERMET D'AFFICHER LES VENTES DE L'UTILISATEUR
 

@@ -127,4 +127,11 @@ public class articleBean implements Serializable {
     public biddingBean getBid() {
         return bid;
     }
+
+    public void setBid(biddingBean bid) {
+        this.bid = bid;
+    }
+    public String toString() {
+        return artName + " " + artDescrip + " " + category.getCatName() + " " + salePrice + " " + startPrice + " " + endAuc + " " + saleStatus + " " + seller.getPseudo();
+    }
 }
