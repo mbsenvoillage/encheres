@@ -2,6 +2,7 @@ package fr.eni.encheres.dal;
 
 import fr.eni.encheres.BusinessException;
 import fr.eni.encheres.bo.userBean;
+import fr.eni.encheres.util.SqlStatements;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,6 +20,38 @@ public class UserDAOJdbcImpl implements UserDAO {
     private static final String UPDATE_USER_INFO = "update utilisateurs set pseudo = ?, nom = ?, prenom = ?, email = ?, telephone = ?, rue = ?, code_postal = ?, ville = ?, mot_de_passe = ? where no_utilisateur = ?";
     private static final String DELETE_USER = "delete from utilisateurs where no_utilisateur = ?";
 
+
+    public void updateUserCredit(int credit, int userNb) throws BusinessException {
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.UPDATE_USER_CREDIT);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, credit);
+                stmt.setInt(2, userNb);
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_UPDATE_DB);
+            throw bizEx;
+        }
+    }
 
     public void deleteUser(int nbutilisateur) throws BusinessException {
         // tente d'ouvrir une connection à la BDD

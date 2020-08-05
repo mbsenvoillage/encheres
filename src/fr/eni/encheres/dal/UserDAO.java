@@ -22,4 +22,6 @@ public interface UserDAO {
     public boolean passwordIsValid(userBean login) throws BusinessException;
 
     public void deleteUser(int nbutilisateur) throws BusinessException;
+
+    public void updateUserCredit(int credit, int userNb) throws BusinessException;
 }

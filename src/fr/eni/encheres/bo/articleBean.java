@@ -121,10 +121,18 @@ public class articleBean implements Serializable {
     }
 
     public LocalDate endAucToLocalDate() {
+        System.out.println(this.endAuc + " salut");
         return this.endAuc.toLocalDate();
     }
 
     public biddingBean getBid() {
         return bid;
+    }
+
+    public void setBid(biddingBean bid) {
+        this.bid = bid;
+    }
+    public String toString() {
+        return artName + " " + artDescrip + " " + category.getCatName() + " " + salePrice + " " + startPrice + " " + endAuc + " " + saleStatus + " " + seller.getPseudo();
     }
 }

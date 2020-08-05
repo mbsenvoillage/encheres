@@ -79,11 +79,12 @@ public class ServletUpForSale extends HttpServlet {
             rd.forward(request, response);
         }
 
-
         article.setPickUp(new PickUp(request.getParameter("rue"), request.getParameter("cpo"), request.getParameter("ville")));
+
 
         try {
             saleManager.addArticleForSale(parametres, article, user);
+            saleManager.addPickUpAddress(article.getPickUp(), article.getArtNb());
             request.setAttribute("article", article);
             boolean added = true;
             request.setAttribute("added", added);

@@ -5,26 +5,24 @@ import java.time.LocalDateTime;
 
 public class biddingBean implements Serializable {
 
-    private userBean seller;
     private LocalDateTime bidDate;
     private int bidAmount;
     private int buyerId;
+    private String buyerName;
+    private int artNb;
 
     // CONSTRUCTOR
 
-    public biddingBean() {
-        seller = new userBean();
+    public biddingBean() { }
+
+    public biddingBean(int bidamount, LocalDateTime date, int artNb, int buyerId) {
+        this.bidAmount = bidamount;
+        this.bidDate = date;
+        this.artNb = artNb;
+        this.buyerId = buyerId;
     }
 
     // GETTERS AND SETTERS
-
-    public userBean getSeller() {
-        return seller;
-    }
-
-    public void setSeller(userBean seller) {
-        this.seller = seller;
-    }
 
     public int getBidAmount() {
         return bidAmount;
@@ -48,5 +46,21 @@ public class biddingBean implements Serializable {
 
     public void setBuyerId(int buyerId) {
         this.buyerId = buyerId;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
+    public int getArtNb() {
+        return artNb;
+    }
+
+    public void setArtNb(int artNb) {
+        this.artNb = artNb;
     }
 }

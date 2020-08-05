@@ -26,8 +26,8 @@
                             <select name="categorie" >
                                 <option value="Informatique" <c:if test="${article.getArtName() == 'Informatique'}">selected</c:if> >Informatique</option>
                                 <option value="Ameublement" <c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if>>Ameublement</option>
-                                <option value="Vêtements" <c:if test="${article.getArtName() == 'Vetements'}">selected</c:if>>Vêtement</option>
-                                <option value="Sport&Loisirs" <c:if test="${article.getArtName() == 'Sport & Loisirs'}">selected</c:if>>Sport&Loisir</option>
+                                <option value="Vêtements" <c:if test="${article.getArtName() == 'Vêtements'}">selected</c:if>>Vêtement</option>
+                                <option value="Sport&Loisirs" <c:if test="${article.getArtName() == 'Sport&Loisirs'}">selected</c:if>>Sport&Loisir</option>
                             </select>
                         </label><br><br>
                         <label for="photo">Photo de l'article <button name="photo">UPLOADER</button></label><br><br>
@@ -59,7 +59,7 @@
                             <select name="categorie" id="categorie">
                                 <option value="Informatique">Informatique</option>
                                 <option value="Ameublement">Ameublement</option>
-                                <option value="Vetements">Vêtement</option>
+                                <option value="Vêtements">Vêtement</option>
                                 <option value="Sport&Loisirs">Sport&Loisirs</option>
                             </select>
                         </label><br><br>
@@ -71,8 +71,8 @@
                         <fieldset>
                             <legend>Retrait</legend>
                             <label for="rue">Rue : <input type="text" id="rue" name="rue" value="${user.getRue()}"></label><br><br>
-                            <label for="cpo">Code postal : <input type="text" id="cpo" name="cpo" value="${user.getVille()}"></label><br><br>
-                            <label for="ville">Ville : <input type="text" id="ville" name="ville" value="${user.getCpo()}"></label><br><br>
+                            <label for="cpo">Code postal : <input type="text" id="cpo" name="cpo" value="${user.getCpo()}" ></label><br><br>
+                            <label for="ville">Ville : <input type="text" id="ville" name="ville" value="${user.getVille()}"></label><br><br>
                         </fieldset>
                         <input type="submit" value="Enregistrer">
                         <%

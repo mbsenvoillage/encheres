@@ -42,5 +42,9 @@ public class PickUp {
         this.ville = ville;
     }
 
+    public String toString() {
+        return rue + "\n" + "\t" + cpo + " " + ville;
+    }
+
 
 }
