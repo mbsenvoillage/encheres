@@ -31,14 +31,6 @@ public class ServletProfileUpdateConfirm extends HttpServlet {
         Map parametres = request.getParameterMap();
 
         userBean modifs = new userBean();
-        /* modifUser.put("pseudo", request.getParameter("pseudo"));
-        modifUser.put("nom", request.getParameter("nom"));
-        modifUser.put("prenom", request.getParameter("prenom"));
-        modifUser.put("email", request.getParameter("nom"));
-        modifUser.put("telephone", request.getParameter("nom"));
-        modifUser.put("rue", request.getParameter("nom"));
-        modifUser.put("cpo", request.getParameter("nom"));
-        modifUser.put("ville", request.getParameter("nom"));*/
 
         mdp.put("mdp", request.getParameter("mdp"));
         mdp.put("nouveaumdp", request.getParameter("nouveaumdp"));

@@ -16,12 +16,12 @@
         <header>
             <c:choose>
                 <c:when test="${user != null}">
-                    <a href="${pageContext.request.contextPath}/ServletLogout">Logout</a>
+                    <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     <a href="${pageContext.request.contextPath}/nouvellevente">Vendre</a>
                     <a href="${pageContext.request.contextPath}/profil">Profil</a>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ServletLogin">S'inscrire - Se connecter</a>
+                    <a href="${pageContext.request.contextPath}/login">S'inscrire - Se connecter</a>
                     <a href="${pageContext.request.contextPath}/nouvellevente">Vendre</a>
                 </c:otherwise>
             </c:choose>

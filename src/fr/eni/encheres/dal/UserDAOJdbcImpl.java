@@ -174,43 +174,6 @@ public class UserDAOJdbcImpl implements UserDAO {
 
     }
 
-    public userBean selectUserPublicInfo(String pseudo) throws BusinessException {
-
-        userBean public_info = new userBean();
-
-        List<String> profileInfo = new ArrayList<String>();
-
-        // Si la méthode hérite d'un objet vide une erreur est levée
-
-        if(pseudo == null) {
-            BusinessException bizEx = new BusinessException();
-            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
-            throw bizEx;
-        }
-
-        try (Connection cnx = ConnectionWizard.getConnection()) {
-            PreparedStatement stmt = cnx.prepareStatement(SELECT_USER_PUBLIC_INFO);
-
-            // Remplit les placeholders avec le pseudo
-            stmt.setString(1, pseudo);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                public_info = userBuilder(rs);
-            }
-
-        } catch (SQLException throwables) {
-
-            // Si erreur de lecture, on lève une erreur
-            throwables.printStackTrace();
-            BusinessException bizEx = new BusinessException();
-            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
-            throw bizEx;
-        }
-
-        return public_info;
-
-    }
 
     public userBean insertUser(userBean user) throws BusinessException {
 

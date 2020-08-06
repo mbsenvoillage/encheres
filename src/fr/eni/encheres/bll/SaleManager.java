@@ -90,6 +90,10 @@ public class SaleManager {
 
         this.dateIsValid(article.getStartAuc(), article.getEndAuc(), bizEx);
 
+        // La description contient-elle moins de 300 caractères ?
+
+        this.wordCount(article.getArtDescrip(), bizEx);
+
         // On affecte au champ no_categorie la valeur correspondante
 
         article.getCategory().setCatNb(getCatId(article.getCategory().getCatName()));
@@ -135,6 +139,14 @@ public class SaleManager {
                 biz.addError(CodesErreurBLL.CHAMPS_VIDE_ERREUR);
                 break;
             }
+        }
+    }
+
+    //  CETTE METHODE S'ASSURE QUE LA DESCRIPTION CONTIENT MOINS DE 300 CARACTERES
+
+    private void wordCount(String description, BusinessException biz)  {
+        if (description.length() > 300) {
+            biz.addError(CodesErreurBLL.ERREUR_FORMAT_DESCRIPTION);
         }
     }
 

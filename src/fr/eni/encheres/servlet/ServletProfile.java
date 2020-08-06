@@ -24,36 +24,36 @@ public class ServletProfile extends HttpServlet {
         // On récupère l'utilisateur courant, par la session
         HttpSession session = request.getSession();
         userBean currentuser = new userBean();
-
-        // L'utilisateur courant est stocké dans une variable
+        String pseudo = request.getParameter("pseudo");
         currentuser = (userBean) session.getAttribute("user");
 
-
-        // On récupère le paramètre pseudo qui doit permettre d'accéder au profil voulu
-        // pour les non propriétaires du compte
-
-        String pseudo = request.getParameter("pseudo");
+        if (session.getAttribute("user") == null && pseudo == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         // S'il n'y a pas d'utilisateur courant ou s'il y en a un mais que son pseudo
         // est différent du profil demandé alors on ne montrera que des infos et fonctionnalités publiques
 
-        if (currentuser == null || (pseudo != null && !pseudo.equals(currentuser.getPseudo()))) {
-            try {
-                UserManager userManager = new UserManager();
-                userBean queriedProfile = new userBean();
-                queriedProfile = userManager.displayUserPublicInfo(pseudo);
-                request.setAttribute("profilepublicinfo", queriedProfile);
-            } catch (BusinessException e) {
-                e.printStackTrace();
-                System.out.println("Something went wrong");
+        UserManager userManager = new UserManager();
+        userBean profile = new userBean();
+
+        if (pseudo != null) {
+            if (session.getAttribute("user") == null || !pseudo.equals(currentuser.getPseudo())) {
+                request.setAttribute("visitor", "visitor");
+                try {
+                    profile = userManager.getUserPrivateInfo(pseudo);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                profile = currentuser;
             }
         } else {
-
-            // Autrement, on montre les infos privées
-            boolean display = true;
-            request.setAttribute("display", display);
+            profile = currentuser;
         }
 
+        request.setAttribute("profile", profile);
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
         rd.forward(request, response);

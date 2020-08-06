@@ -25,11 +25,11 @@ public class UserManager {
         user.updateUserCredit(credit, userNb);
     }
 
-    public userBean checkCredentials(userBean login) throws BusinessException {
-        return this.user.checkID(login);
+    public void checkCredentials(userBean login) throws BusinessException {
+        this.user.checkID(login);
     }
 
-    public userBean addUser(Map parametres, String pseudo, String email, userBean utilisateur, HttpServletRequest req) throws BusinessException {
+    public void addUser(Map parametres, String pseudo, String email, userBean utilisateur, HttpServletRequest req) throws BusinessException {
         BusinessException bizEx = new BusinessException();
 
         // Tous le champs ont-ils étés remplis ?
@@ -55,7 +55,6 @@ public class UserManager {
             throw bizEx;
         }
 
-        return utilisateur;
     }
 
     // Cette méthode vérifie si le pseudo est disponible
@@ -96,12 +95,9 @@ public class UserManager {
                 break;
             }
         }
-
     }
 
-    public userBean displayUserPublicInfo(String pseudo) throws BusinessException {
-        return this.user.selectUserPublicInfo(pseudo);
-    }
+
 
     public userBean getUserPrivateInfo(String pseudo) throws BusinessException {
         return this.user.selectUserPrivateInfo(pseudo);
@@ -111,7 +107,7 @@ public class UserManager {
         return this.user.passwordIsValid(user);
     }
 
-    public userBean updateUserProfile(Map parametres, userBean currentUser, userBean modifs, HashMap<String, String> mdp, HttpServletRequest req) throws BusinessException {
+    public void updateUserProfile(Map parametres, userBean currentUser, userBean modifs, HashMap<String, String> mdp, HttpServletRequest req) throws BusinessException {
         BusinessException bizEx = new BusinessException();
 
         // Tous le champs ont-ils étés remplis ?
@@ -160,7 +156,6 @@ public class UserManager {
             throw bizEx;
         }
 
-        return modifs;
     }
 
     public void supprimerUtilisateur(userBean user) throws BusinessException {

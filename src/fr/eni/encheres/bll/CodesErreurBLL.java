@@ -18,4 +18,8 @@ public class CodesErreurBLL {
     // Les dates de début et/ou de fin d'enchères sont invalides
 
     public static final int ERREUR_DATE = 40003;
+
+    // La description est trop longue
+
+    public static final int ERREUR_FORMAT_DESCRIPTION = 40004;
 }

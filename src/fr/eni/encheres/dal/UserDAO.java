@@ -13,8 +13,6 @@ public interface UserDAO {
 
     public void checkEmail(String email) throws BusinessException;
 
-    public userBean selectUserPublicInfo(String pseudo) throws BusinessException;
-
     public userBean selectUserPrivateInfo(String pseudo) throws BusinessException;
 
     public userBean updateUserInfo (userBean user) throws BusinessException;

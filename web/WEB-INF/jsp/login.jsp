@@ -13,11 +13,8 @@
     <title>Login</title>
 </head>
 <body>
-<%
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-%>
 
-    <form name="login" action="${pageContext.request.contextPath}/ServletLogin" method="post">
+    <form name="login" action="${pageContext.request.contextPath}/login" method="post">
         <label>Identifiant : <input type="text" name="userID"></label>
         <br>
         <label>Mot de passe : <input type="password" name="password"></label>
