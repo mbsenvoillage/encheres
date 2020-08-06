@@ -15,7 +15,7 @@ public interface SaleDAO {
 
     public List<articleBean> selectOngoingAuctions(int userNb, String name, String cat, String status) throws BusinessException;
 
-    public List<articleBean> selectUserWiningBids(Integer userNb, String name, String cat) throws BusinessException;
+    public List<articleBean> selectUserWinningBids(Integer userNb, String name, String cat) throws BusinessException;
 
     public List<articleBean> selectUserItemsForSale(Integer userNb, String name, String cat, String status) throws BusinessException;
 

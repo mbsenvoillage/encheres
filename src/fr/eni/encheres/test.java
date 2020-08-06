@@ -8,15 +8,15 @@ import java.util.regex.Pattern;
 public class test {
 
     public static void main(String[] args) {
-        StringBuilder test = new StringBuilder("\"select AV.nom_article, AV.description, A.max as 'prixdevente', AV.date_fin_encheres, U.pseudo as 'seller' from ARTICLES_VENDUS AV\\n\" +\n" +
-                "            \"inner join (SELECT max(A.montant_enchere) as 'max', A.no_article, A.no_utilisateur from ENCHERES A, ENCHERES B\\n\" +\n" +
-                "            \"where A.no_utilisateur <> B.no_utilisateur and A.no_article = B.no_article and A.montant_enchere > B.montant_enchere\\n\" +\n" +
-                "            \"group by A.no_article, A.no_utilisateur) A on A.no_article = AV.no_article\\n\" +\n" +
-                "            \"inner join UTILISATEURS U on U.no_utilisateur = AV.no_utilisateur\\n\" +\n" +
-                "            \"where A.no_utilisateur = ? and AV.etat_vente = 'ET'\\n\" +\n" +
-                "            \"group by A.no_article, A.no_utilisateur, AV.nom_article, AV.description, A.max, U.pseudo, AV.date_fin_encheres\"");
-        int index = test.indexOf("'ET'");
-        test.insert(index + 4, " Jolly ");
+        StringBuilder test = new StringBuilder("select e.montant_enchere as 'highest bid', e.no_utilisateur, u.pseudo as 'buyer', e.date_enchere from ARTICLES_VENDUS a\n" +
+                "inner join ENCHERES E on a.no_article = E.no_article\n" +
+                "inner join UTILISATEURS U on U.no_utilisateur = e.no_utilisateur\n" +
+                "where a.nom_article = ? and a.prix_vente = e.montant_enchere");
+
+        int index = test.indexOf("where");
+        int indexend = test.indexOf("");
+        test.replace(index, test.length(), "where a.prix_vente = e.montant_enchere and E.no_utilisateur = ?");
+        //test.insert(index + 4, " Jolly ");
 
         System.out.println(test);
 

@@ -89,6 +89,7 @@ public class ServletDisplayArticles extends HttpServlet {
                     } catch (BusinessException e) {
                         e.printStackTrace();
                         request.setAttribute("errorList", e.getErrorList());
+                        request.setAttribute("win", "win");
                     }
                 }
                 // SI LES RECHERCHES PORTENT SUR LES VENTES

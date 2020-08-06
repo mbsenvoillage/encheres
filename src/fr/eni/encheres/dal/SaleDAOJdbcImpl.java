@@ -11,6 +11,69 @@ import java.util.List;
 
 public class SaleDAOJdbcImpl implements SaleDAO {
 
+
+
+    // PERMET DE SÉLECTIONNER LES ENCHERES REMPORTEES PAR L'UTILISATEUR
+
+
+    public List<articleBean> selectUserWinningBids(Integer userNb, String name, String cat) throws BusinessException {
+        StringBuilder sqlstmt = new StringBuilder();
+        sqlstmt.append(SqlStatements.SELECT_WINNING_BIDS);
+        boolean skip = false;
+
+        // Vérifie les paramètres pour ajouter des conditions à la requête
+
+        if (!name.isEmpty()) {
+            if (!cat.isEmpty()) {
+                sqlstmt.append(SqlStatements.byNameAndCat);
+            } else {
+                sqlstmt.append(SqlStatements.byName);
+            }
+        } else if (!cat.isEmpty()) {
+            sqlstmt.append(SqlStatements.byCat);
+        }
+
+
+        System.out.println(sqlstmt);
+        List<articleBean> allArticles = new ArrayList<articleBean>();
+
+
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            PreparedStatement stmt = cnx.prepareStatement(String.valueOf(sqlstmt));
+            stmt.setInt(1, userNb);
+
+            if (!name.isEmpty()) {
+                if (!cat.isEmpty()) {
+                    int no_cat = this.selectCatByName(cat);
+                    stmt.setString(2, name);
+                    stmt.setInt(3, no_cat);
+                } else {
+                    stmt.setString(2, name);
+                }
+            } else if (!cat.isEmpty()) {
+                int no_cat = this.selectCatByName(cat);
+                stmt.setInt(2, no_cat);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                allArticles.add(articleBuilder(rs));
+            }
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        return allArticles;
+    }
+
     // PERMET DE METTRE A JOUR L'ETAT DE VENTE A CHAQUE REQUETE SELECT PROVENANT DE LA PAGE D'ACCUEIL
 
     public void updateSaleStatus() throws BusinessException {
@@ -34,6 +97,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 cnx.rollback();
                 throw e;
             }
+
+            System.out.println("Status is being updated");
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -270,90 +335,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
 
-    // PERMET DE SÉLECTIONNER LES ENCHERES REMPORTEES PAR L'UTILISATEUR
-
-    public List<articleBean> selectUserWiningBids(Integer userNb, String name, String cat) throws BusinessException {
-
-
-        StringBuilder sqlstmt = new StringBuilder();
-        sqlstmt.append(SqlStatements.SELECT_WINNING_BIDS);
-        int index = sqlstmt.indexOf("'ET'");
-
-
-        // On ajoute à la requête les conditions selon les critères de recherche passés en paramètre de la requête HTTP
-        // Ici le mot de recherche et la catégorie
-        if (!name.isEmpty()) {
-            if (!cat.isEmpty()) {
-                sqlstmt.insert(index + 4, " and AV.nom_article = ? and no_categorie = ?");
-            } else {
-                sqlstmt.insert(index + 4, " and AV.nom_article = ?");
-            }
-        } else if (!cat.isEmpty()) {
-            sqlstmt.insert(index + 4, " and no_categorie = ?");
-        } else {
-            boolean donothing;
-        }
-
-        List<articleBean> articles = new ArrayList<articleBean>();
-
-
-        try (Connection cnx = ConnectionWizard.getConnection()) {
-
-            //System.out.println(sqlstmt);
-
-
-            PreparedStatement stmt = cnx.prepareStatement(String.valueOf(sqlstmt));
-
-            // S'il y a un mot de recherche
-            if (!name.isEmpty())
-            {
-                // Et s'il y a aussi une catégorie
-                if (!cat.isEmpty())
-                {
-                    int no_cat = this.selectCatByName(cat);
-                    stmt.setInt(1, userNb);
-                    stmt.setString(2, name);
-                    stmt.setInt(3, no_cat);
-
-                    // s'il n'y a pas de caté et que le mot de recherche
-                } else {
-                    stmt.setInt(1, userNb);
-                    stmt.setString(2, name);
-                }
-                // s'il n'y a pas de mot de recherche
-            }
-            else if (!cat.isEmpty())
-            {
-                int no_cat = this.selectCatByName(cat);
-                System.out.println("Le num de la cat = " + no_cat + " dans le cas où il n'y a pas de keyword");
-                stmt.setInt(1, userNb);
-                stmt.setInt(2, no_cat);
-
-            }
-            else
-            {
-                stmt.setInt(1, userNb);
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while(rs.next()) {
-                articles.add(articleBuilderTwo(rs));
-            }
-
-        } catch (SQLException throwables) {
-
-            // Si erreur de lecture, on lève une erreur
-            throwables.printStackTrace();
-            BusinessException bizEx = new BusinessException();
-            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
-            throw bizEx;
-        }
-
-        return articles;
-    }
-
-
     // SELECTIONNE LES ENCHERES SELON LA CATEGORIE, LE MOT CLE, L'ETAT DE VENTE
 
 
@@ -374,13 +355,13 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         } else if (!cat.isEmpty()) {
             sqlstmt.append(SqlStatements.byCat);
         } else {
-            sqlstmt.append(" where AV.etat_vente = ").append("'").append(status).append("'");
+            sqlstmt.append(" where AV.etat_vente in ('EC', 'ET')");
             skip = true;
         }
 
         // Ici le statue de la vente
         if (!skip) {
-        sqlstmt.append(" where AV.etat_vente = ").append("'").append(status).append("'");
+        sqlstmt.append(" where AV.etat_vente in ('EC', 'ET')");
         }
 
         sqlstmt.append(" and A.no_utilisateur = ?");
@@ -596,9 +577,10 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 stmt.setTimestamp(3, Timestamp.valueOf(article.getStartAuc()));
                 stmt.setTimestamp(4, Timestamp.valueOf(article.getEndAuc()));
                 stmt.setInt(5, article.getStartPrice());
-                stmt.setInt(6, user.getUserNb());
-                stmt.setInt(7, article.getCategory().getCatNb());
-                stmt.setString(8, status);
+                stmt.setInt(6, 0);
+                stmt.setInt(7, user.getUserNb());
+                stmt.setInt(8, article.getCategory().getCatNb());
+                stmt.setString(9, status);
 
                 // Envoie la requête
                 stmt.executeUpdate();

@@ -75,7 +75,7 @@ public class SaleManager {
     // PERMET D'AFFICHER LES ENCHERES REMPORTEES PAR L'UTILISATEUR
 
     public List<articleBean> displayUserWiningBids(Integer userNb, String name, String cat) throws BusinessException {
-        return articleforSale.selectUserWiningBids(userNb, name, cat);
+        return articleforSale.selectUserWinningBids(userNb, name, cat);
     }
 
     // PERMET DE METTRE A JOUR UN ARTICLE EN VENTE
