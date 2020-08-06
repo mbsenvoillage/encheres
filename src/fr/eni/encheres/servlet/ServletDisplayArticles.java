@@ -28,6 +28,13 @@ public class ServletDisplayArticles extends HttpServlet {
 
         SaleManager saleManager = new SaleManager();
 
+        try {
+            saleManager.updateSaleStatus();
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            request.setAttribute("errorList", e.getErrorList());
+        }
+
         HttpSession session = request.getSession();
 
         request.setCharacterEncoding("UTF-8");

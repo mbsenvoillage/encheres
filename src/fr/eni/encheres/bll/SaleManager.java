@@ -18,6 +18,12 @@ public class SaleManager {
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
 
+    // PERMET DE METTRE A JOUR LE STATUT DE VENTE
+
+    public void updateSaleStatus() throws BusinessException {
+        articleforSale.updateSaleStatus();
+    }
+
     // PERMET D'AFFICHER LE DETAIL D'UNE ENCHERE
 
     public articleBean auctionDetail(String artName) throws BusinessException {

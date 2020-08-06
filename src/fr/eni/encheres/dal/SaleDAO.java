@@ -30,4 +30,6 @@ public interface SaleDAO {
     public biddingBean selectHighestBidder(String artName) throws BusinessException;
 
     public void insertRetrait(PickUp retrait, int artNb) throws BusinessException;
+
+    public void updateSaleStatus() throws BusinessException;
 }

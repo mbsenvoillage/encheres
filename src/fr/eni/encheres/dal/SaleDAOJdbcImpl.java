@@ -11,6 +11,38 @@ import java.util.List;
 
 public class SaleDAOJdbcImpl implements SaleDAO {
 
+    // PERMET DE METTRE A JOUR L'ETAT DE VENTE A CHAQUE REQUETE SELECT PROVENANT DE LA PAGE D'ACCUEIL
+
+    public void updateSaleStatus() throws BusinessException {
+        // tente d'ouvrir une connection à la BDD
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SET_STATUS_TO_EC);
+                stmt.executeUpdate();
+
+                stmt = cnx.prepareStatement(SqlStatements.SET_STATUS_TO_ET);
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_UPDATE_DB);
+            throw bizEx;
+        }
+    }
+
     public biddingBean selectHighestBidder(String artName) throws BusinessException {
         biddingBean bid = new biddingBean();
 
@@ -238,7 +270,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
 
-    // THIS ONE WORKS
+    // PERMET DE SÉLECTIONNER LES ENCHERES REMPORTEES PAR L'UTILISATEUR
+
     public List<articleBean> selectUserWiningBids(Integer userNb, String name, String cat) throws BusinessException {
 
 
@@ -321,8 +354,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
 
-    // THIS ONE WORKS
-    // Effectue les requêtes sql pour le mode connecté et la catégorie achats
+    // SELECTIONNE LES ENCHERES SELON LA CATEGORIE, LE MOT CLE, L'ETAT DE VENTE
+
 
     public List<articleBean> selectOngoingAuctions(int userNb, String name, String cat, String status) throws BusinessException {
         StringBuilder sqlstmt = new StringBuilder();
@@ -341,27 +374,22 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         } else if (!cat.isEmpty()) {
             sqlstmt.append(SqlStatements.byCat);
         } else {
-            sqlstmt.append(" where etat_vente = ").append("'").append(status).append("'");
+            sqlstmt.append(" where AV.etat_vente = ").append("'").append(status).append("'");
             skip = true;
         }
 
         // Ici le statue de la vente
-        if (!status.isEmpty() && !skip) {
-            if (status.equals("EC")) {
-                sqlstmt.append(SqlStatements.EC);
-            } else if (status.equals("CR")) {
-                sqlstmt.append(SqlStatements.CR);
-            } else {
-                sqlstmt.append(SqlStatements.ET);
-            }
+        if (!skip) {
+        sqlstmt.append(" where AV.etat_vente = ").append("'").append(status).append("'");
         }
 
-        // Si l'utilisateur a numéro qutre que 0, c'est qu'il possède un compte
-        // Donc on ajoute aux conditions de la requête le numéro d'utilisateur
-        if (userNb != 0) {
-            sqlstmt.append(SqlStatements.byUserNb);
-            System.out.println("Le no utilisateur = " + userNb);
-        }
+        sqlstmt.append(" and A.no_utilisateur = ?");
+        System.out.println("Le no utilisateur = " + userNb);
+
+
+        // On ajoute les colonnes du GROUP BY
+
+        sqlstmt.append("\ngroup by A.no_article, A.no_utilisateur, AV.nom_article, AV.description, A.max, U.pseudo, AV.date_fin_encheres, AV.prix_initial");
 
         List<articleBean> allArticles = new ArrayList<articleBean>();
         System.out.println(sqlstmt);
@@ -372,50 +400,35 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             PreparedStatement stmt = cnx.prepareStatement(String.valueOf(sqlstmt));
 
             // Execution de la requête pour les utilisateurs ayant un compte
-            if (userNb != 0) {
 
-                // S'il y a un mot de recherche
-                if (!name.isEmpty())
-                {
-                    // Et s'il y a aussi une catégorie
-                    if (!cat.isEmpty())
-                    {
-                        int no_cat = this.selectCatByName(cat);
-                        stmt.setString(1, name);
-                        stmt.setInt(2, no_cat);
-                        stmt.setInt(3, userNb);
-                        // s'il n'y a pas de caté et que le mot de recherche
-                    } else {
-                        stmt.setString(1, name);
-                        stmt.setInt(2, userNb);
-                    }
-                    // s'il n'y a pas de mot de recherche
-                }
-                else if (!cat.isEmpty())
+            // S'il y a un mot de recherche
+            if (!name.isEmpty())
+            {
+                // Et s'il y a aussi une catégorie
+                if (!cat.isEmpty())
                 {
                     int no_cat = this.selectCatByName(cat);
-                    stmt.setInt(1, no_cat);
+                    stmt.setString(1, name);
+                    stmt.setInt(2, no_cat);
+                    stmt.setInt(3, userNb);
+                    // s'il n'y a pas de caté et que le mot de recherche
+                } else {
+                    stmt.setString(1, name);
                     stmt.setInt(2, userNb);
                 }
-                else
-                {
-                    stmt.setInt(1, userNb);
-                }
-        // Exécution de la requête pour les utilisateurs qui n'ont pas de compte
-            } else {
-                if (!name.isEmpty()) {
-                    if (!cat.isEmpty()) {
-                        int no_cat = this.selectCatByName(cat);
-                        stmt.setString(1, name);
-                        stmt.setInt(2, no_cat);
-                    } else {
-                        stmt.setString(1, name);
-                    }
-                } else if (!cat.isEmpty()) {
-                    int no_cat = this.selectCatByName(cat);
-                    stmt.setInt(1, no_cat);
-                }
+                // s'il n'y a pas de mot de recherche
             }
+            else if (!cat.isEmpty())
+            {
+                int no_cat = this.selectCatByName(cat);
+                stmt.setInt(1, no_cat);
+                stmt.setInt(2, userNb);
+            }
+            else
+            {
+                stmt.setInt(1, userNb);
+            }
+
 
             ResultSet rs = stmt.executeQuery();
 
@@ -437,7 +450,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
 
-    //THIS ONE WORKS TOO
+    //SELECTIONNE LES ARTICLES SELON MOT CLE, CATEGORIE
 
     public List<articleBean> selectAllArticles(String name, String cat, String status) throws BusinessException {
         StringBuilder sqlstmt = new StringBuilder();
@@ -506,6 +519,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
 
         return allArticles;
     }
+
+    // INSERE LES DONNES DE RETRAIT CORRESPONDANTES AU DEPOS D'UNE ANNONCE
 
     public void insertRetrait(PickUp retrait, int artNb) throws BusinessException {
         // Si la méthode hérite d'un objet vide une erreur est levée
@@ -685,6 +700,15 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
         article.getSeller().setPseudo(rs.getString("seller"));
 
+        if (cols > 5) {
+            article.setArtName(rs.getString("nom_article"));
+            article.setArtDescrip(rs.getString("description"));
+            article.setStartPrice(rs.getInt("prix_initial"));
+            article.setSalePrice(rs.getInt("prixdevente"));
+            article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            article.getSeller().setPseudo(rs.getString("seller"));
+        }
+
         return article;
     }
 
@@ -734,12 +758,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
             article.getSeller().setPseudo(rs.getString("seller"));
         }
-
-
-
-
-
-
 
         return article;
     }

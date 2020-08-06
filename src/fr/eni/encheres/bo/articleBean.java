@@ -121,7 +121,6 @@ public class articleBean implements Serializable {
     }
 
     public LocalDate endAucToLocalDate() {
-        System.out.println(this.endAuc + " salut");
         return this.endAuc.toLocalDate();
     }
 
