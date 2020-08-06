@@ -4,6 +4,7 @@ public abstract class SqlStatements {
 
     public static String INSERT_NEW_ARTICLE = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie, etat_vente) values (?, ?, ?, ?, ?, ?, ?, ?)";
     public static String SELECT_CAT_BY_NAME = "select no_categorie from categories where libelle = ?";
+    public static String SELECT_ALL_ARTICLES = "select a.nom_article, a.description, a.prix_initial, a.date_fin_encheres, U.pseudo as 'seller' from ARTICLES_VENDUS a inner join UTILISATEURS U on a.no_utilisateur = U.no_utilisateur";
 
     public static String SELECT_ONGOING_AUCS = "select AV.nom_article, AV.description, AV.prix_initial, A.max as 'prixdevente', AV.date_fin_encheres, U.pseudo as 'seller' from ARTICLES_VENDUS AV\n" +
     "inner join (SELECT max(A.montant_enchere) as 'max', A.no_article, A.no_utilisateur from ENCHERES A, ENCHERES B\n" +
