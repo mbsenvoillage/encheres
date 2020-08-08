@@ -8,44 +8,106 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
     <head>
         <title>Signup</title>
+        <%@include file="head.jsp"%>
     </head>
     <body>
-        <div class="signup-form">
-            <h1>Inscrivez-vous sur Enchères.org, c'est gratuit</h1>
+
+        <header>
+            <%@include file="header.jsp"%>
+        </header>
+
+
+        <div class="container">
+            <h3 class="text-center">Inscrivez-vous, c'est gratuit</h3>
             <form action="${pageContext.request.contextPath}/signup" method="post">
-                <label for="pseudo">Pseudo : <input type="text" id="pseudo" name="pseudo"></label>
-                <label for="nom">Nom : <input type="text" id="nom" name="nom"></label><br><br>
-                <label for="prenom">Prénom : <input type="text" id="prenom" name="prenom"></label>
-                <label for="email">Email : <input type="text" id="email" name="email"></label><br><br>
-                <label for="telephone">Téléphone : <input type="text" id="telephone" name="telephone"></label>
-                <label for="rue">Rue : <input type="text" id="rue" name="rue"></label><br><br>
-                <label for="cpo">Code postal : <input type="text" id="cpo" name="cpo"></label>
-                <label for="ville">Ville : <input type="text" id="ville" name="ville"></label><br><br>
-                <label for="mdp">Mot de passe : <input type="password" id="mdp" name="mdp"></label>
-                <label for="confirmation">Confirmation : <input type="password" id="confirmation" name="confirmation"></label><br><br>
-                <input type="submit" value="Créer">
+                <div class="form-row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="pseudo">Pseudo </label>
+                        <input class="form-control" type="text" id="pseudo" name="pseudo" >
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6 nom">
+                        <label for="nom">Nom </label>
+                        <input class="form-control" type="text" id="nom" name="nom" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="prenom">Prénom </label>
+                        <input class="form-control" type="text" id="prenom" name="prenom" >
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="email">Email </label>
+                        <input class="form-control" type="text" id="email" name="email" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="telephone">Téléphone </label>
+                        <input class="form-control" type="text" id="telephone" name="telephone" >
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="rue">Rue </label>
+                        <input class="form-control" type="text" id="rue" name="rue" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="cpo">Code postal </label>
+                        <input class="form-control" type="text" id="cpo" name="cpo" >
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="ville">Ville </label>
+                        <input class="form-control" type="text" id="ville" name="ville" >
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="mdp">Mot de passe</label>
+                        <input class="form-control" type="password" id="mdp" name="mdp" >
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <label class="col-form-label" for="confirmation">Confirmation </label>
+                        <input class="form-control" type="password" id="confirmation" name="confirmation" >
+                    </div>
+                </div>
+                <div class="form-row " >
+                    <div class="col-sm-4 offset-sm-4 text-center btn-creer">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Créer</button>
+                    </div>
+                </div>
             </form>
+            <div class="form-row">
+                <div class="col-sm-4 offset-sm-4 text-center btn-supprimer">
+                    <form action="${pageContext.request.contextPath}/" method="get">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" >Annuler</button>
+                    </form>
+                </div>
+            </div>
+            <div>
+                <div class="form-row" >
+                    <div class="col-sm-4 offset-sm-4 text-center">
+                        <%
+                            List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
+                            if (errorList != null)
+                            {
+                                for (int code : errorList) {
+                        %>
+                        <p><%= LecteurMessage.getErrorMessage(code) %></p>
+                        <br>
+                        <%
+                                }
+                            }
+                        %>
+                    </div>
+                </div>
+            </div>
+            <small id="emailHelp" class="form-text text-muted">Tous les champs sont obligatoires, sauf le numéro de téléphone.</small>
 
-            <form action="${pageContext.request.contextPath}/accueil" method="get">
-                <input type="submit" name="cancelbtn" value="Annuler">
-            </form>
-
-            <%
-                List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
-                if (errorList != null)
-                {
-                    for (int code : errorList) {
-            %>
-            <p><%= LecteurMessage.getErrorMessage(code) %></p>
-            <br>
-            <%
-                    }
-                }
-            %>
-            <p>Tous les champs sont obligatoires, sauf le numéro de téléphone.</p>
         </div>
+        <%@include file="footer.jsp"%>
     </body>
 </html>

@@ -18,6 +18,7 @@ public class ServletLogout extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         session.removeAttribute("user");
+        session.removeAttribute("article");
 
         // utiliser session.invalidate. faire if session
 

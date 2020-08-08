@@ -26,12 +26,12 @@ public class SaleManager {
 
     // PERMET D'AFFICHER LE DETAIL D'UNE ENCHERE
 
-    public articleBean auctionDetail(String artName) throws BusinessException {
+    public articleBean auctionDetail(int artNb) throws BusinessException {
         articleBean article = new articleBean();
-        article = articleforSale.detailAuction(artName);
+        article = articleforSale.detailAuction(artNb);
 
-        if (articleforSale.selectHighestBidder(artName) != null) {
-            article.setBid(articleforSale.selectHighestBidder(artName));
+        if (articleforSale.selectHighestBidder(artNb) != null) {
+            article.setBid(articleforSale.selectHighestBidder(artNb));
         }
         return article;
     }
@@ -78,7 +78,7 @@ public class SaleManager {
         return articleforSale.selectUserWinningBids(userNb, name, cat);
     }
 
-    // PERMET DE METTRE A JOUR UN ARTICLE EN VENTE
+    // PERMET D'ajouter un article à vendre
     public articleBean addArticleForSale(Map parametres, articleBean article, userBean user) throws BusinessException {
         BusinessException bizEx = new BusinessException();
 

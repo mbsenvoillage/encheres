@@ -77,7 +77,7 @@ public class ServletBid extends HttpServlet {
 
                 article.setSalePrice(bidAmount);
 
-                article = saleManager.auctionDetail(article.getArtName());
+                article = saleManager.auctionDetail(article.getArtNb());
                 request.setAttribute("article", article);
                 request.setAttribute("success", "Votre enchère a bien été enregistrée.");
             } catch (BusinessException e) {
@@ -90,9 +90,16 @@ public class ServletBid extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String article = request.getParameter("article");
+        String artNb = request.getParameter("artNb");
+        int nb = Integer.parseInt(artNb);
         SaleManager saleManager = new SaleManager();
         HttpSession session = request.getSession();
+
+
+        if (session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/");
+            return;
+        }
 
         articleBean articledetail = new articleBean();
 
@@ -100,7 +107,7 @@ public class ServletBid extends HttpServlet {
 
         try {
             //articledetail = saleManager.displayAucDetail(article);
-            articledetail = saleManager.auctionDetail(article);
+            articledetail = saleManager.auctionDetail(nb);
             session.setAttribute("article", articledetail);
             //System.out.println(articledetail.endAucToLocalDate());
 

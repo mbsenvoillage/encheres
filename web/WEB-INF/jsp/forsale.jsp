@@ -9,91 +9,118 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<!DOCTYPE html>
 <html>
     <head>
         <title>Nouvelle Vente</title>
+        <%@include file="head.jsp"%>
     </head>
     <body>
-        <header><h1>Nouvelle vente</h1></header>
+
+        <header>
+            <%@include file="header.jsp"%>
+        </header>
+
         <main>
-            <div>
-                <c:choose>
-                    <c:when test="${added}">
-                    <form id="saleform" action="${pageContext.request.contextPath}/nouvellevente" method="post">
-                        <label for="article">Article : <input type="text" name="article" value="${article.getArtName()}"></label><br><br>
-                        <label for="description">Description : <textarea name="description" cols="20" rows="5" >${article.getArtDescrip()}</textarea></label><br><br>
-                        <label for="categorie"> Catégorie
-                            <select name="categorie" >
-                                <option value="Informatique" <c:if test="${article.getArtName() == 'Informatique'}">selected</c:if> >Informatique</option>
-                                <option value="Ameublement" <c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if>>Ameublement</option>
-                                <option value="Vêtements" <c:if test="${article.getArtName() == 'Vêtements'}">selected</c:if>>Vêtement</option>
-                                <option value="Sport&Loisirs" <c:if test="${article.getArtName() == 'Sport&Loisirs'}">selected</c:if>>Sport&Loisir</option>
-                            </select>
-                        </label><br><br>
-                        <label for="photo">Photo de l'article <button name="photo">UPLOADER</button></label><br><br>
+
+            <div class="container">
+                <h3 class="text-center">Nouvelle vente</h3>
+
+                <form id="saleform" action="${pageContext.request.contextPath}/nouvellevente" method="post">
+                    <div class="form-group">
+                        <label for="article">Article</label>
+                        <input type="text" name="article" class="form-control" id="article" <c:if test="${added}">value="${article.getArtName()}"</c:if>>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" ><c:if test="${added}">${article.getArtDescrip()}</c:if></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="categorie"> Catégorie</label>
+                        <select class="form-control" name="categorie" id="categorie">
+                            <option value="Informatique" <c:if test="${added}"><c:if test="${article.getArtName() == 'Informatique'}">selected</c:if></c:if> >Informatique</option>
+
+                            <option value="Ameublement" <c:if test="${added}"><c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if></c:if> >Ameublement</option>
+
+                            <option value="Vêtements" <c:if test="${added}"><c:if test="${article.getArtName() == 'Vêtements'}">selected</c:if></c:if> >Vêtement</option>
+
+                            <option value="Sport&Loisirs" <c:if test="${added}"><c:if test="${article.getArtName() == 'Sport&Loisirs'}">selected</c:if></c:if> >Sport&Loisir</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="photo">Photo de l'article </label>
+                        <input class="form-control-file" type="file" id="photo" name="photo">
+                    </div>
+                    <div class="form-group">
                         <label for="prix">Points:</label>
-                        <input type="number" id="prix" name="prix" step="10" min="0" value="${article.getStartPrice()}"><br><br>
-                        <label>Début de l'enchère<input type="datetime-local" name="salestart" value="${article.getStartAuc()}"></label><br><br>
-                        <label>Fin de l'enchère<input type="datetime-local" name="saleend" value="${article.getEndAuc()}"></label><br><br>
-                        <fieldset>
-                            <legend>Retrait</legend>
-                            <label for="rue">Rue : <input type="text" name="rue" value="${article.getPickUp().getRue()}"></label><br><br>
-                            <label for="cpo">Code postal : <input type="text" name="cpo" value="${article.getPickUp().getCpo()}"></label><br><br>
-                            <label for="ville">Ville : <input type="text" name="ville" value="${article.getPickUp().getVille()}"></label><br><br>
-                        </fieldset>
-                        <input type="submit" value="Enregistrer">
-                    </form>
-                    <form action="${pageContext.request.contextPath}/" method="get">
-                        <input type="submit" name="cancelbtn" value="Annuler">
-                    </form>
-                    <form action="${pageContext.request.contextPath}/" method="get">
-                        <input type="submit" name="cancelbtn" value="Annuler la vente">
-                    </form>
-                    <p>L'annonce a bien été ajoutée.</p>
-                    </c:when>
-                    <c:otherwise>
-                    <form id="saleform" action="${pageContext.request.contextPath}/nouvellevente" method="post">
-                        <label for="article">Article : <input type="text" id="article" name="article"></label><br><br>
-                        <label for="description">Description : <textarea id="description" name="description" cols="20" rows="5"></textarea></label><br><br>
-                        <label for="categorie"> Catégorie
-                            <select name="categorie" id="categorie">
-                                <option value="Informatique">Informatique</option>
-                                <option value="Ameublement">Ameublement</option>
-                                <option value="Vêtements">Vêtement</option>
-                                <option value="Sport&Loisirs">Sport&Loisirs</option>
-                            </select>
-                        </label><br><br>
-                        <label for="photo">Photo de l'article <button id="photo">UPLOADER</button></label><br><br>
-                        <label for="prix">Points:</label>
-                        <input type="number" name="prix" step="10"><br><br>
-                        <label>Début de l'enchère<input type="datetime-local" id="salestart" name="salestart"></label><br><br>
-                        <label>Fin de l'enchère<input type="datetime-local" id="saleend" name="saleend" ></label><br><br>
-                        <fieldset>
-                            <legend>Retrait</legend>
-                            <label for="rue">Rue : <input type="text" id="rue" name="rue" value="${user.getRue()}"></label><br><br>
-                            <label for="cpo">Code postal : <input type="text" id="cpo" name="cpo" value="${user.getCpo()}" ></label><br><br>
-                            <label for="ville">Ville : <input type="text" id="ville" name="ville" value="${user.getVille()}"></label><br><br>
-                        </fieldset>
-                        <input type="submit" value="Enregistrer">
-                        <%
-                            List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
-                            if (errorList != null)
-                            {
-                                for (int code : errorList) {
-                        %>
-                        <p><%= LecteurMessage.getErrorMessage(code) %></p>
-                        <br>
-                        <%
-                                }
-                            }
-                        %>
-                    </form>
+                        <input class="form-control" type="number" id="prix" name="prix" step="10" min="0" <c:if test="${added}">value="${article.getStartPrice()}"</c:if> >
+
+                    </div>
+                    <div class="form-group">
+                        <label for="salestart">Début de l'enchère</label>
+                        <input class="form-control" type="datetime-local" id="salestart" name="salestart" <c:if test="${added}">value="${article.getStartAuc()}"</c:if>>
+                    </div>
+                    <div class="form-group">
+                        <label for="saleend">Fin de l'enchère</label>
+                        <input class="form-control" type="datetime-local" name="saleend" id="saleend" <c:if test="${added}">value="${article.getEndAuc()}"</c:if>>
+                    </div>
+                    <fieldset class="form-group">
+                        <legend>Retrait</legend>
+                        <div class="form-group">
+                            <label for="rue">Rue</label>
+                            <input class="form-control" id="rue" type="text" name="rue" value="${user.getRue()}" <c:if test="${added}">value="${article.getPickUp().getRue()}"</c:if>>
+                        </div>
+                        <div class="form-group">
+                            <label for="cpo">Code postal</label>
+                            <input class="form-control" id="cpo" type="text" name="cpo" value="${user.getCpo()}" <c:if test="${added}">value="${article.getPickUp().getCpo()}"</c:if>>
+                        </div>
+                        <div class="form-group">
+                            <label for="ville">Ville</label>
+                            <input class="form-control" id="ville" type="text" name="ville" value="${user.getVille()}" <c:if test="${added}">value="${article.getPickUp().getVille()}"</c:if>>
+                        </div>
+                    </fieldset>
+                    <div class="form-row " >
+                        <div class="col-sm-12 col-md-6 col-lg-6 btn-modifier">
+                            <input class="form-control" type="submit" value="Enregistrer">
+                        </div>
+                    </div>
+                </form>
+
+                <div class="form-row">
+                    <div class="col-sm-12 col-md-6 col-lg-6 btn-supprimer">
                         <form action="${pageContext.request.contextPath}/" method="get">
-                            <input type="submit" name="cancelbtn" value="Annuler">
+                            <input class="form-control" type="submit" name="deletebtn" value="Annuler">
                         </form>
-                    </c:otherwise>
-                </c:choose>
+                    </div>
+                </div>
+                <c:if test="${added}">
+                    <div class="form-row">
+                        <div class="col-sm-12 col-md-6 col-lg-6 btn-supprimer">
+                            <form action="${pageContext.request.contextPath}/" method="get">
+                                <input class="form-control" type="submit" name="deletebtn" value="Annuler la vente">
+                            </form>
+                        </div>
+                    </div>
+
+                    <p class="text-center">L'annonce a bien été ajoutée.</p>
+
+                </c:if>
+
+                <%
+                    List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
+                    if (errorList != null)
+                    {
+                        for (int code : errorList) {
+                %>
+                <p class="text-center"><%= LecteurMessage.getErrorMessage(code) %></p>
+                <br>
+                <%
+                        }
+                    }
+                %>
+
             </div>
         </main>
+        <%@include file="footer.jsp"%>
     </body>
 </html>

@@ -11,99 +11,112 @@
 <html>
     <head>
         <title>Enchère</title>
+        <%@include file="head.jsp"%>
     </head>
     <body>
-        <h2>Détail de la vente</h2>
 
-        <c:if test="${article.getSaleStatus() == 'ET' && article.getBid().getBuyerName() == user.getPseudo()}">
+        <%@include file="header.jsp"%>
 
-            <p>Vous avez remporté la vente </p>
+        <div class="container">
+            <h3 class="text-center">Détail de la vente</h3>
 
-        </c:if>
+            <c:if test="${article.getSaleStatus() == 'ET' && article.getBid().getBuyerName() == user.getPseudo()}">
 
-        <c:if test="${article.getSaleStatus() == 'ET' && article.getSeller().getPseudo() == user.getPseudo()}">
+                <p>Vous avez remporté la vente </p>
 
-            <p>${article.getBid().getBuyerName()} a remporté la vente</p>
+            </c:if>
 
-        </c:if>
+            <c:if test="${article.getSaleStatus() == 'ET' && article.getSeller().getPseudo() == user.getPseudo()}">
 
-        <p>${article.getArtName()}</p>
+                <p>${article.getBid().getBuyerName()} a remporté la vente</p>
 
-        <p>Description : ${article.getArtDescrip()}</p>
+            </c:if>
 
-        <p>Catégorie : ${article.getCategory().getCatName()}</p>
+            <div class="row">
 
-        <p>Meilleure offre:
+                <ul class="list-group">
+                    <li class="list-group-item text-center">${article.getArtName()}</li>
+                    <li class="list-group-item">Description : ${article.getArtDescrip()}</li>
+                    <li class="list-group-item">Catégorie : ${article.getCategory().getCatName()}</li>
+                    <li class="list-group-item">Meilleure offre:
+                        <c:choose>
+                            <c:when test="${article.getSalePrice() == 0}">
+                                pas d'offre pour le moment.
+                            </c:when>
+                            <c:when test="${article.getSaleStatus() == 'ET' && article.getBid().getBuyerName() == user.getPseudo()}">
+                                ${article.getSalePrice()}
+                            </c:when>
+                            <c:otherwise>
+                                ${article.getSalePrice()} par <a href="${pageContext.request.contextPath}/profil?pseudo=${article.getBid().getBuyerName()}">${article.getBid().getBuyerName()}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </li>
+                    <li class="list-group-item">Mise à prix : ${article.getStartPrice()}</li>
+                    <li class="list-group-item">Fin de l'enchère : ${article.endAucToLocalDate()}</li>
+                    <li class="list-group-item">Retrait : ${article.getPickUp().toString()}</li>
+                    <li class="list-group-item">Vendeur : ${article.getSeller().getPseudo()}</li>
+                </ul>
+            </div>
+            <div class="form-row" >
+                <div class="col-sm-4 offset-sm-4 text-center">
+                    <c:if test="${article.getSaleStatus() == 'EC'}">
+                        <form action="${pageContext.request.contextPath}/enchere" method="post">
+                            <div class="form-group">
+                                    <label for="prix">Ma proposition</label>
+                                    <input type="number" class="form-control" id="prix" name="bidAmount" step="10" min="${article.getSalePrice()}" value="${article.getSalePrice()}">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Enchérir</button>
+                            </div>
+                        </form>
+                    </c:if>
+                </div>
+            </div>
+            <c:if test="${requestScope.success}">
+                <div class="form-row">
+                    <div class="col-sm-4 offset-sm-4 text-center">
 
-            <c:choose>
+                            <p>${requestScope.success}</p>
 
-                <c:when test="${article.getSalePrice() == 0}">
+                    </div>
+                </div>
+            </c:if>
+            <div class="form-row">
+                <div class="col-sm-4 offset-sm-4 text-center">
+                    <form method="post" action="${pageContext.request.contextPath}/search?searchcrit=achats&categories=toutes&keyword=&status=EC">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Retour</button>
+                    </form>
+                </div>
 
-                    pas d'offre pour le moment.
+            </div>
 
-                </c:when>
 
-                <c:when test="${article.getSaleStatus() == 'ET' && article.getBid().getBuyerName() == user.getPseudo()}">
 
-                    ${article.getSalePrice()}
 
-                </c:when>
 
-                <c:otherwise>
-            <a href="${pageContext.request.contextPath}/profil?pseudo=${element.getSeller().getPseudo()}">${element.getSeller().getPseudo()}</a>
 
-                ${article.getSalePrice()} par <a href="${pageContext.request.contextPath}/profil?pseudo=${article.getBid().getBuyerName()}">${article.getBid().getBuyerName()}</a></p>
 
-                </c:otherwise>
 
-            </c:choose>
 
-        <p>Mise à prix : ${article.getStartPrice()}</p>
-
-        <p>Fin de l'enchère : ${article.endAucToLocalDate()}</p>
-
-        <p>Retrait : ${article.getPickUp().toString()}</p>
-
-        <p>Vendeur : ${article.getSeller().getPseudo()}</p>
-
-        <c:if test="${article.getSaleStatus() == 'EC'}">
-
-            <form action="${pageContext.request.contextPath}/enchere" method="post">
-
-                <label for="prix">Ma proposition:</label>
-
-                <input type="number" id="prix" name="bidAmount" step="10" min="${article.getSalePrice()}" value="${article.getSalePrice()}"><br><br>
-
-                <input type="submit" value="Enchérir">
-
-            </form>
-
-        </c:if>
-
-        <c:if test="${requestScope.success}">
-
-            <p>${requestScope.success}</p>
-
-        </c:if>
-
-        <form method="post" action="${pageContext.request.contextPath}/search?searchcrit=achats&categories=toutes&keyword=&status=EC">
-
-            <input type="submit" value="Back">
-
-        </form>
-
-        <%
-            List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
-            if (errorList != null)
-            {
-                for (int code : errorList) {
-        %>
-        <p><%= LecteurMessage.getErrorMessage(code) %></p>
-        <br>
-        <%
+            <%
+                List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
+                if (errorList != null)
+                {
+                    for (int code : errorList) {
+            %>
+            <p><%= LecteurMessage.getErrorMessage(code) %></p>
+            <br>
+            <%
+                    }
                 }
-            }
-        %>
+            %>
+        </div>
+
+
+
+        <%@include file="footer.jsp"%>
+
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 </html>
+

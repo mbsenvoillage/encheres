@@ -52,6 +52,7 @@ public class ServletProfileUpdateConfirm extends HttpServlet {
             userManager.updateUserProfile(parametres, currentUser, modifs, mdp, request);
 
             session.setAttribute("user", modifs);
+            request.setAttribute("profile", modifs);
 
             request.setAttribute("success", "Les modifications demandées ont bien été prises en compte");
 

@@ -25,9 +25,9 @@ public interface SaleDAO {
 
     public int checkUserCredit(int userNb) throws BusinessException;
 
-    public articleBean detailAuction(String artName) throws BusinessException;
+    public articleBean detailAuction(int artNb) throws BusinessException;
 
-    public biddingBean selectHighestBidder(String artName) throws BusinessException;
+    public biddingBean selectHighestBidder(int artNb) throws BusinessException;
 
     public void insertRetrait(PickUp retrait, int artNb) throws BusinessException;
 

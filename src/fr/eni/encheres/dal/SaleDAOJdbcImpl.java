@@ -108,13 +108,13 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
     }
 
-    public biddingBean selectHighestBidder(String artName) throws BusinessException {
+    public biddingBean selectHighestBidder(int artNb) throws BusinessException {
         biddingBean bid = new biddingBean();
 
         try (Connection cnx = ConnectionWizard.getConnection()) {
             PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_HIGHEST_BIDDER);
             System.out.println(SqlStatements.SELECT_HIGHEST_BIDDER);
-            stmt.setString(1, artName);
+            stmt.setInt(1, artNb);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -135,16 +135,16 @@ public class SaleDAOJdbcImpl implements SaleDAO {
     }
 
 
-    public articleBean detailAuction(String artName) throws BusinessException {
+    public articleBean detailAuction(int artNb) throws BusinessException {
         articleBean article = new articleBean();
         try (Connection cnx = ConnectionWizard.getConnection()) {
             PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_AUCTION_DETAIL);
             System.out.println(SqlStatements.SELECT_AUCTION_DETAIL);
-            stmt.setString(1, artName);
+            stmt.setInt(1, artNb);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                article = articleBuilderTwo(rs);
+                article = articleBuilder(rs);
             }
 
         } catch (SQLException throwables) {
@@ -676,74 +676,30 @@ public class SaleDAOJdbcImpl implements SaleDAO {
 
         articleBean article = new articleBean();
 
-        article.setArtName(rs.getString("nom_article"));
-        article.setArtDescrip(rs.getString("description"));
-        article.setStartPrice(rs.getInt("prix_initial"));
-        article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-        article.getSeller().setPseudo(rs.getString("seller"));
-
-        if (cols > 5) {
-            article.setArtName(rs.getString("nom_article"));
-            article.setArtDescrip(rs.getString("description"));
-            article.setStartPrice(rs.getInt("prix_initial"));
-            article.setSalePrice(rs.getInt("prixdevente"));
-            article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            article.getSeller().setPseudo(rs.getString("seller"));
-        }
-
-        return article;
-    }
-
-
-    private articleBean articleBuilderTwo(ResultSet rs) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int cols = rsmd.getColumnCount();
-
-        articleBean article = new articleBean();
-
-
-
-        if (cols > 12) {
-            article.setArtName(rs.getString("nom_article"));
-            article.setArtDescrip(rs.getString("description"));
-            article.getCategory().setCatName(rs.getString("libelle"));
-            article.setSalePrice(rs.getInt("prix_vente"));
-            article.setStartPrice(rs.getInt("prix_initial"));
-            article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            System.out.println(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            article.getPickUp().setRue(rs.getString("rue"));
-            article.getPickUp().setCpo(rs.getString("code_postal"));
-            article.getPickUp().setVille(rs.getString("ville"));
-            article.getSeller().setPseudo(rs.getString("seller"));
-            article.getBid().setBuyerName(rs.getString("buyer"));
-            article.setSaleStatus(rs.getString("etat_vente"));
-            article.setArtNb(rs.getInt("no_article"));
-            article.getBid().setBuyerId(rs.getInt("no_utilisateur"));
-        } else if (cols > 10 ) {
-            article.setArtName(rs.getString("nom_article"));
-            article.setArtDescrip(rs.getString("description"));
-            article.getCategory().setCatName(rs.getString("libelle"));
-            article.setSalePrice(rs.getInt("prix_vente"));
-            article.setStartPrice(rs.getInt("prix_initial"));
-            article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            System.out.println(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            article.getPickUp().setRue(rs.getString("rue"));
-            article.getPickUp().setCpo(rs.getString("code_postal"));
-            article.getPickUp().setVille(rs.getString("ville"));
-            article.getSeller().setPseudo(rs.getString("seller"));
-            article.setSaleStatus(rs.getString("etat_vente"));
-            article.setArtNb(rs.getInt("no_article"));
+            if (cols > 10 ) {
+                article.setArtName(rs.getString("nom_article"));
+                article.setArtDescrip(rs.getString("description"));
+                article.getCategory().setCatName(rs.getString("libelle"));
+                article.setSalePrice(rs.getInt("prix_vente"));
+                article.setStartPrice(rs.getInt("prix_initial"));
+                article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                System.out.println(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                article.getPickUp().setRue(rs.getString("rue"));
+                article.getPickUp().setCpo(rs.getString("code_postal"));
+                article.getPickUp().setVille(rs.getString("ville"));
+                article.getSeller().setPseudo(rs.getString("seller"));
+                article.setSaleStatus(rs.getString("etat_vente"));
+                article.setArtNb(rs.getInt("no_article"));
         } else {
-            article.setArtName(rs.getString("nom_article"));
-            article.setArtDescrip(rs.getString("description"));
-            article.setStartPrice(rs.getInt("prixdevente"));
-            article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            article.getSeller().setPseudo(rs.getString("seller"));
-        }
+                article.setArtName(rs.getString("nom_article"));
+                article.setArtDescrip(rs.getString("description"));
+                article.setStartPrice(rs.getInt("prix_initial"));
+                article.setSalePrice(rs.getInt("prixdevente"));
+                article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                article.getSeller().setPseudo(rs.getString("seller"));
+                article.setArtNb(rs.getInt("no_article"));
+            }
 
         return article;
     }
-
-
-
 }
