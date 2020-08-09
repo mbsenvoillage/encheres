@@ -690,6 +690,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 article.getSeller().setPseudo(rs.getString("seller"));
                 article.setSaleStatus(rs.getString("etat_vente"));
                 article.setArtNb(rs.getInt("no_article"));
+                article.getSeller().setTelephone(rs.getString("telephone"));
         } else {
                 article.setArtName(rs.getString("nom_article"));
                 article.setArtDescrip(rs.getString("description"));

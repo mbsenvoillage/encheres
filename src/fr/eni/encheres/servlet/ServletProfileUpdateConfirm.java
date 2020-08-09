@@ -60,6 +60,7 @@ public class ServletProfileUpdateConfirm extends HttpServlet {
             rd.forward(request, response);
         } catch (BusinessException e) {
             e.printStackTrace();
+            request.setAttribute("profile", currentUser);
             request.setAttribute("errorList", e.getErrorList());
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
             rd.forward(request, response);

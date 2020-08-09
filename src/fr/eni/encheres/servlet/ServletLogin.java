@@ -54,6 +54,10 @@ public class ServletLogin extends HttpServlet {
                 // On lui assigne l'utilisateur en attribut
                 session.setAttribute("user", user);
 
+                // On limite la durée de vie maximale de la session à 5 min
+
+                session.setMaxInactiveInterval(5*60);
+
                 RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");
                 rd.forward(request, response);
 

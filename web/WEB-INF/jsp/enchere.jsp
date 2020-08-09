@@ -22,13 +22,13 @@
 
             <c:if test="${article.getSaleStatus() == 'ET' && article.getBid().getBuyerName() == user.getPseudo()}">
 
-                <p>Vous avez remporté la vente </p>
+                <p class="text-center">Vous avez remporté la vente !</p>
 
             </c:if>
 
             <c:if test="${article.getSaleStatus() == 'ET' && article.getSeller().getPseudo() == user.getPseudo()}">
 
-                <p>${article.getBid().getBuyerName()} a remporté la vente</p>
+                <p class="text-center">${article.getBid().getBuyerName()} a remporté la vente</p>
 
             </c:if>
 
@@ -54,7 +54,12 @@
                     <li class="list-group-item">Mise à prix : ${article.getStartPrice()}</li>
                     <li class="list-group-item">Fin de l'enchère : ${article.endAucToLocalDate()}</li>
                     <li class="list-group-item">Retrait : ${article.getPickUp().toString()}</li>
-                    <li class="list-group-item">Vendeur : ${article.getSeller().getPseudo()}</li>
+                    <li class="list-group-item">Vendeur : <a href="${pageContext.request.contextPath}/profil?pseudo=${article.getSeller().getPseudo()}">${article.getSeller().getPseudo()}</a></li>
+                    <c:if test="${article.getSaleStatus() == 'ET' && article.getBid().getBuyerName() == user.getPseudo()}">
+
+                        <li class="list-group-item">Téléphone : ${article.getSeller().getTelephone()}</li>
+
+                    </c:if>
                 </ul>
             </div>
             <div class="form-row" >
@@ -63,7 +68,7 @@
                         <form action="${pageContext.request.contextPath}/enchere" method="post">
                             <div class="form-group">
                                     <label for="prix">Ma proposition</label>
-                                    <input type="number" class="form-control" id="prix" name="bidAmount" step="10" min="${article.getSalePrice()}" value="${article.getSalePrice()}">
+                                    <input type="number" class="form-control" id="prix" name="bidAmount" step="10" min="${article.getStartPrice()}">
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Enchérir</button>
@@ -72,51 +77,45 @@
                     </c:if>
                 </div>
             </div>
-            <c:if test="${requestScope.success}">
-                <div class="form-row">
-                    <div class="col-sm-4 offset-sm-4 text-center">
-
-                            <p>${requestScope.success}</p>
-
-                    </div>
-                </div>
-            </c:if>
             <div class="form-row">
                 <div class="col-sm-4 offset-sm-4 text-center">
                     <form method="post" action="${pageContext.request.contextPath}/search?searchcrit=achats&categories=toutes&keyword=&status=EC">
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Retour</button>
                     </form>
                 </div>
-
             </div>
+            <div class="form-row">
+                <div class="col-sm-4 offset-sm-4 text-center">
+                    <%
+                        List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
+                        if (errorList != null)
+                        {
+                            for (int code : errorList) {
+                    %>
+                    <p><%= LecteurMessage.getErrorMessage(code) %></p>
+                    <br>
+                    <%
+                            }
+                        }
+                    %>
+                </div>
+            </div>
+            <c:if test="${requestScope.success != null}">
+                <div class="form-row">
+                    <div class="col-sm-4 offset-sm-4 text-center">
+                        <p>${requestScope.success}</p>
+                    </div>
+                </div>
+            </c:if>
 
-
-
-
-
-
-
-
-
-            <%
-                List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");
-                if (errorList != null)
-                {
-                    for (int code : errorList) {
-            %>
-            <p><%= LecteurMessage.getErrorMessage(code) %></p>
-            <br>
-            <%
-                    }
-                }
-            %>
         </div>
 
 
 
         <%@include file="footer.jsp"%>
+        <%@include file="scripts.jsp"%>
+
 
     </body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 </html>
 

@@ -122,5 +122,6 @@
             </div>
         </main>
         <%@include file="footer.jsp"%>
+        <%@include file="scripts.jsp"%>
     </body>
 </html>
