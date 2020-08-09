@@ -19,6 +19,10 @@ public class UserManager {
         this.user = DAOFactory.getUserDAO();
     }
 
+    public userBean selectUserInfoById(Integer userNb) throws BusinessException {
+        return user.selectUserInfoById(userNb);
+    }
+
     // PERMET DE METTRE A JOUR LE CREDIT DE L'UTILISATEUR APRES ENCHERE
 
     public void updateUserCredit(int credit, int userNb) throws BusinessException {

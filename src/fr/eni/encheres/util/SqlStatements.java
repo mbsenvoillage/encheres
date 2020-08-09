@@ -49,10 +49,22 @@ public abstract class SqlStatements {
     public static String SET_STATUS_TO_ET = "update ARTICLES_VENDUS set etat_vente = 'ET' where date_debut_encheres  < DATEADD(hour, 2, current_timestamp) and date_fin_encheres < DATEADD(hour, 2, current_timestamp)";
 
     public static String byName =  " where a.nom_article = ?";
+
     public static String byCat = " where a.no_categorie = ?";
+
     public static String byNameAndCat = " where a.nom_article = ? and a.no_categorie = ?";
+
     public static String EC = " and etat_vente = 'EC'";
+
     public static String CR = " and etat_vente = 'CR'";
+
     public static String ET = " and etat_vente = 'ET'";
+
     public static String byUserNb = " and e.no_utilisateur = ?";
+
+    public static String SELECT_VALIDATOR_BY_SELECTOR = "select selector, validator, no_utilisateur, id from utilisateur_auth where selector = ?";
+
+    public static String INSERT_NEW_AUTH_TOKEN = "insert into utilisateur_auth (selector, validator, no_utilisateur) values (?, ?, ?)";
+
+    public static String DELETE_AUTH_TOKEN_BY_ID = "delete from utilisateur_auth where id = ?";
 }

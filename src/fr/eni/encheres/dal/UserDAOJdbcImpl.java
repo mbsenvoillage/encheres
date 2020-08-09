@@ -4,6 +4,7 @@ import fr.eni.encheres.BusinessException;
 import fr.eni.encheres.bo.userBean;
 import fr.eni.encheres.util.SqlStatements;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,49 @@ public class UserDAOJdbcImpl implements UserDAO {
     private static final String SELECT_USER_BY_PSEUDO = "select pseudo from utilisateurs where pseudo = ?";
     private static final String SELECT_USER_BY_EMAIL = "select email from utilisateurs where email = ?";
     private static final String SELECT_USER_BY_ID = "select pseudo, mot_de_passe from utilisateurs where pseudo = ? and mot_de_passe = ?";
-    private static final String SELECT_USER_PUBLIC_INFO = "select pseudo, nom, prenom, email, telephone, rue, code_postal, ville from utilisateurs where pseudo = ?";
+    private static final String SELECT_INFO_BY_ID = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit from utilisateurs where no_utilisateur = ?";
     private static final String SELECT_USER_PRIVATE_INFO = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit from utilisateurs where pseudo = ?";
     private static final String UPDATE_USER_INFO = "update utilisateurs set pseudo = ?, nom = ?, prenom = ?, email = ?, telephone = ?, rue = ?, code_postal = ?, ville = ?, mot_de_passe = ? where no_utilisateur = ?";
     private static final String DELETE_USER = "delete from utilisateurs where no_utilisateur = ?";
+
+
+    public userBean selectUserInfoById(Integer userNb) throws BusinessException {
+
+        userBean private_info = new userBean();
+
+        List<String> profileInfo = new ArrayList<String>();
+
+        // Si la méthode hérite d'un objet vide une erreur est levée
+
+        if(userNb == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+            PreparedStatement stmt = cnx.prepareStatement(SELECT_INFO_BY_ID);
+
+            // Remplit les placeholders avec le pseudo
+            stmt.setInt(1, userNb);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                private_info = userBuilder(rs);
+            }
+
+        } catch (SQLException throwables) {
+
+            // Si erreur de lecture, on lève une erreur
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
+            throw bizEx;
+        }
+
+        return private_info;
+
+    }
 
 
     public void updateUserCredit(int credit, int userNb) throws BusinessException {

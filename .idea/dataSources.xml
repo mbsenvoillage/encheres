@@ -7,11 +7,5 @@
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
       <jdbc-url>jdbc:sqlserver://localhost;databaseName=ENCHERES_DB;</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="@localhost" uuid="e99988b0-6e2a-44d5-9d7e-138cf70e2e2b">
-      <driver-ref>sqlserver.ms</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
-      <jdbc-url>jdbc:sqlserver://localhost</jdbc-url>
-    </data-source>
   </component>
 </project>

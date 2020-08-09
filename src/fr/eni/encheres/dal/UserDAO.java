@@ -22,4 +22,6 @@ public interface UserDAO {
     public void deleteUser(int nbutilisateur) throws BusinessException;
 
     public void updateUserCredit(int credit, int userNb) throws BusinessException;
+
+    public userBean selectUserInfoById(Integer userNb) throws BusinessException;
 }

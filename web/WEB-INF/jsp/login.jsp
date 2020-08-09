@@ -23,15 +23,15 @@
                     <form name="login" action="${pageContext.request.contextPath}/login" method="post">
                     <div class="form-group">
                         <label for="userID">Identifiant</label>
-                        <input type="text" class="form-control" name="userID" id="userID" placeholder="Saisissez votre identifiant">
+                        <input type="text" class="form-control" name="userID" id="userID" placeholder="Saisissez votre identifiant" <c:if test="${requestScope.remember == 'remember'}">value="${user.getPseudo()}" </c:if>>
                     </div>
                     <div class="form-group">
                         <label for="password">Mot de passe</label>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Mot de passe">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Mot de passe" <c:if test="${requestScope.remember == 'remember'}">value="${user.getMdp()}" </c:if>>
                     </div>
                     <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Se souvenir de moi</label>
+                        <input type="checkbox" class="form-check-input" id="rememberme" name="rememberme" value="true">
+                        <label class="form-check-label" for="rememberme">Se souvenir de moi</label>
 
                     </div>
                     <div class="form-group">

@@ -8,4 +8,6 @@ public abstract  class DAOFactory {
 
     public static SaleDAO getSaleDAO() { return new SaleDAOJdbcImpl(); }
 
+    public static userAuthDAO getUserAuthDAO() { return new userAuthDAOJdbcImpl(); }
+
 }

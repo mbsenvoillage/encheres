@@ -1,6 +1,8 @@
 package fr.eni.encheres.bo;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class userBean implements Serializable {
     private int userNb;
@@ -16,6 +18,7 @@ public class userBean implements Serializable {
     private int credit;
     private boolean isAdmin;
     private boolean connecte;
+    private Set<userAuth> userAuthTokens = new HashSet<>(0);
 
     //  Constructors
 
@@ -160,5 +163,13 @@ public class userBean implements Serializable {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public Set<userAuth> getUserAuthTokens() {
+        return userAuthTokens;
+    }
+
+    public void setUserAuthTokens(Set<userAuth> userAuthTokens) {
+        this.userAuthTokens = userAuthTokens;
     }
 }
