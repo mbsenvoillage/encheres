@@ -79,16 +79,7 @@ $(document).ready(function ()
     })
 });
 
-/* function disableAchatsCBoxECET() {
 
-    if (!document.getElementById("enchouv").disabled) {
-        document.getElementById("enchenc").disabled = true;
-        document.getElementById("enchremp").disabled = true;
-    } else {
-        document.getElementById("enchenc").disabled = false;
-        document.getElementById("enchremp").disabled = false;
-    }
-}*/
 
 $(document).ready(function()
 {

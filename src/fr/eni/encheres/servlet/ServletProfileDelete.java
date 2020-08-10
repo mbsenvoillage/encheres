@@ -21,6 +21,13 @@ public class ServletProfileDelete extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserManager usmng = new UserManager();
         HttpSession session = request.getSession();
+
+        if (session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+
         userBean user = new userBean();
         user = (userBean) session.getAttribute("user");
         try {

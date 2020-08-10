@@ -33,8 +33,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             sqlstmt.append(SqlStatements.byCat);
         }
 
-
-        System.out.println(sqlstmt);
         List<articleBean> allArticles = new ArrayList<articleBean>();
 
 
@@ -98,8 +96,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 throw e;
             }
 
-            System.out.println("Status is being updated");
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             BusinessException bizEx = new BusinessException();
@@ -113,7 +109,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
 
         try (Connection cnx = ConnectionWizard.getConnection()) {
             PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_HIGHEST_BIDDER);
-            System.out.println(SqlStatements.SELECT_HIGHEST_BIDDER);
             stmt.setInt(1, artNb);
             ResultSet rs = stmt.executeQuery();
 
@@ -139,7 +134,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         articleBean article = new articleBean();
         try (Connection cnx = ConnectionWizard.getConnection()) {
             PreparedStatement stmt = cnx.prepareStatement(SqlStatements.SELECT_AUCTION_DETAIL);
-            System.out.println(SqlStatements.SELECT_AUCTION_DETAIL);
             stmt.setInt(1, artNb);
             ResultSet rs = stmt.executeQuery();
 
@@ -154,7 +148,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             bizEx.addError(CodesErreurDAL.ECHEC_LECTURE_DB);
             throw bizEx;
         }
-        System.out.println(article.toString());
         return article;
     }
 
@@ -289,7 +282,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
 
         sqlstmt.append(" and a.no_utilisateur = ?");
-        System.out.println(sqlstmt);
         List<articleBean> allArticles = new ArrayList<articleBean>();
 
 
@@ -365,7 +357,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
 
         sqlstmt.append(" and A.no_utilisateur = ?");
-        System.out.println("Le no utilisateur = " + userNb);
 
 
         // On ajoute les colonnes du GROUP BY
@@ -373,8 +364,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         sqlstmt.append("\ngroup by A.no_article, A.no_utilisateur, AV.nom_article, AV.description, A.max, U.pseudo, AV.date_fin_encheres, AV.prix_initial");
 
         List<articleBean> allArticles = new ArrayList<articleBean>();
-        System.out.println(sqlstmt);
-
 
         try (Connection cnx = ConnectionWizard.getConnection()) {
 
@@ -462,7 +451,6 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 sqlstmt.append(SqlStatements.ET);
             }
         }
-        System.out.println(sqlstmt);
         List<articleBean> allArticles = new ArrayList<articleBean>();
 
 

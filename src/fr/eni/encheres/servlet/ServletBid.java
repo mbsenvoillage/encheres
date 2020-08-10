@@ -27,6 +27,12 @@ public class ServletBid extends HttpServlet {
         HttpSession session = request.getSession();
         userBean user = new userBean();
         user = (userBean) session.getAttribute("user");
+
+        if (session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         articleBean article = (articleBean) session.getAttribute("article");
         int bidAmount = 0;
         SaleManager saleManager = new SaleManager();
@@ -71,8 +77,6 @@ public class ServletBid extends HttpServlet {
                 saleManager.updateSalePrice(bidAmount, article.getArtNb());
                 userManager.updateUserCredit((-bidAmount), user.getUserNb());
 
-                System.out.println(article.getSalePrice() + " " + " " +  article.getBid().getBuyerId());
-
                 userManager.updateUserCredit(article.getSalePrice(), article.getBid().getBuyerId());
 
                 article.setSalePrice(bidAmount);
@@ -109,7 +113,6 @@ public class ServletBid extends HttpServlet {
             //articledetail = saleManager.displayAucDetail(article);
             articledetail = saleManager.auctionDetail(nb);
             session.setAttribute("article", articledetail);
-            //System.out.println(articledetail.endAucToLocalDate());
 
         } catch (BusinessException e) {
             e.printStackTrace();

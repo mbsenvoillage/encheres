@@ -22,6 +22,12 @@ public class ServletProfileUpdate extends HttpServlet {
 
         // Récupère la session et son attribut "user"
         HttpSession session = request.getSession();
+
+        if (session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         userBean u = new userBean();
 
         // Assigne l'attribut de session en attribut de requête

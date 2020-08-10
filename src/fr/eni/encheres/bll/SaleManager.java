@@ -104,7 +104,6 @@ public class SaleManager {
         // On affecte au champ no_categorie la valeur correspondante
 
         article.getCategory().setCatNb(getCatId(article.getCategory().getCatName()));
-        System.out.println("THIS is the cat nb" + article.getCategory().getCatNb());
 
         // Si les tests ci-dessus n'ont levé aucune erreur, on procède à l'ajout de l'annonce
 
@@ -135,7 +134,6 @@ public class SaleManager {
         // On affecte au champ no_categorie la valeur correspondante
 
         article.getCategory().setCatNb(getCatId(article.getCategory().getCatName()));
-        System.out.println("THIS is the cat nb" + article.getCategory().getCatNb());
 
         // Si les tests ci-dessus n'ont levé aucune erreur, on procède à l'ajout de l'annonce
 

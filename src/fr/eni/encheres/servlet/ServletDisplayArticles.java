@@ -109,13 +109,10 @@ public class ServletDisplayArticles extends HttpServlet {
             } catch (BusinessException e) {
                 e.printStackTrace();
             }
-            System.out.println(keyword + " " + categorie + " " + status);
         }
 
         if (!allArticles.isEmpty()) {
             request.setAttribute("allArticles", allArticles);
-        } else {
-            System.out.println("La liste d'article est vide ");
         }
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/accueil.jsp");

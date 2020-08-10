@@ -140,7 +140,6 @@ public class ServletUpForSale extends HttpServlet {
 
         if (errorList.size() > 0) {
             try {
-                System.out.println("We're here to get the article info ");
                 article = saleManager.auctionDetail(Integer.parseInt(request.getParameter("artnb")));
                 request.setAttribute("article", article);
                 boolean failedmodif = true;
@@ -168,8 +167,6 @@ public class ServletUpForSale extends HttpServlet {
             if (request.getParameter("modif") != null && request.getParameter("modif").equals("true")) {
                 SaleManager saleManager = new SaleManager();
 
-                System.out.println("I'm in the right place");
-
                 try {
                     articleBean article = saleManager.auctionDetail(Integer.parseInt(request.getParameter("artnb")));
                     boolean added = true;
@@ -181,8 +178,6 @@ public class ServletUpForSale extends HttpServlet {
                     e.printStackTrace();
                 }
             }
-
-
 
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
             rd.forward(request, response);

@@ -24,6 +24,11 @@ public class ServletProfileUpdateConfirm extends HttpServlet {
         HttpSession session = request.getSession();
         userBean currentUser = (userBean) session.getAttribute("user");
 
+        if (session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         // On récupère les données du formulaire est les insère dans une hashmap
         HashMap<String, String> mdp = new HashMap<String, String>();
 
