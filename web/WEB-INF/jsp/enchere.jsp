@@ -77,6 +77,18 @@
                     </c:if>
                 </div>
             </div>
+            <c:if test="${user.getPseudo() == article.getSeller().getPseudo() && article.getSaleStatus() == 'CR'}">
+                <div class="form-row">
+                    <div class="col-sm-4 offset-sm-4 text-center">
+                        <form method="get" action="${pageContext.request.contextPath}/nouvellevente?modif=true">
+                            <input type="hidden" name="modif" value="true">
+                            <input type="hidden" name="artnb" value="${article.getArtNb()}">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Modifier</button>
+                        </form>
+                    </div>
+                </div>
+            </c:if>
+
             <div class="form-row">
                 <div class="col-sm-4 offset-sm-4 text-center">
                     <form method="post" action="${pageContext.request.contextPath}/search?searchcrit=achats&categories=toutes&keyword=&status=EC">

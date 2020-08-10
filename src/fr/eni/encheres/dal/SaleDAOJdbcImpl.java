@@ -489,6 +489,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 allArticles.add(articleBuilder(rs));
             }
 
+            stmt.close();
+
         } catch (SQLException throwables) {
 
             // Si erreur de lecture, on lève une erreur
@@ -546,6 +548,52 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         }
     }
 
+    // PERMET DE MODIFIER LE LIEU DE RETRAIT D'UN ARTICLE
+
+    public void updateRetrait(PickUp retrait, int artNb) throws BusinessException {
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if (retrait == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+
+        // tente d'ouvrir une connection à la BDD
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.UPDATE_PICKUP_DETAIL);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, artNb);
+                stmt.setString(2, retrait.getRue());
+                stmt.setString(3, retrait.getCpo());
+                stmt.setString(4, retrait.getVille());
+                stmt.setInt(5, retrait.getArtNb());
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_INSERT_OBJECT);
+            throw bizEx;
+        }
+    }
+
 
     // PERMET D'INSÉRER UN ARTICLE DANS LA BASE DE DONNÉES
 
@@ -577,7 +625,7 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 stmt.setTimestamp(3, Timestamp.valueOf(article.getStartAuc()));
                 stmt.setTimestamp(4, Timestamp.valueOf(article.getEndAuc()));
                 stmt.setInt(5, article.getStartPrice());
-                stmt.setInt(6, 0);
+                stmt.setInt(6, article.getStartPrice());
                 stmt.setInt(7, user.getUserNb());
                 stmt.setInt(8, article.getCategory().getCatNb());
                 stmt.setString(9, status);
@@ -613,6 +661,62 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         return article;
     }
 
+    // PERMT DE MODIFIER UN ARTICLE EN DONT LA VENTE N'A PAS DÉBUTÉ
+
+
+    public articleBean updateArticle(articleBean article, userBean user) throws BusinessException {
+
+        // Si la méthode hérite d'un objet vide une erreur est levée
+        if (article == null) {
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.NULL_OBJECT_EXCEPTION);
+            throw bizEx;
+        }
+
+        // On détermine le statut de la vente
+
+        String status = setAucStatus(article.getStartAuc(), article.getEndAuc());
+
+        // tente d'ouvrir une connection à la BDD
+        try (Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.UPDATE_ARTICLE);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setString(1, article.getArtName());
+                stmt.setString(2, article.getArtDescrip());
+                stmt.setTimestamp(3, Timestamp.valueOf(article.getStartAuc()));
+                stmt.setTimestamp(4, Timestamp.valueOf(article.getEndAuc()));
+                stmt.setInt(5, article.getStartPrice());
+                stmt.setInt(6, article.getStartPrice());
+                stmt.setInt(7, article.getCategory().getCatNb());
+                stmt.setString(8, status);
+                stmt.setInt(9, article.getArtNb());
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_UPDATE_DB);
+            throw bizEx;
+        }
+
+
+        article.setSaleStatus(status);
+        return article;
+    }
+
     // PERMET DE DETERMINER LE NO D'UNE CATEGORIE A PARTIR DE SON NOM
 
     public int selectCatByName(String cat) throws BusinessException {
@@ -640,6 +744,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
             if(rs.next()) {
                 catId = rs.getInt("no_categorie");
             }
+
+            stmt.close();
 
         } catch (SQLException throwables) {
 
@@ -682,8 +788,8 @@ public class SaleDAOJdbcImpl implements SaleDAO {
                 article.getCategory().setCatName(rs.getString("libelle"));
                 article.setSalePrice(rs.getInt("prix_vente"));
                 article.setStartPrice(rs.getInt("prix_initial"));
+                article.setStartAuc(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
                 article.setEndAuc(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-                System.out.println(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
                 article.getPickUp().setRue(rs.getString("rue"));
                 article.getPickUp().setCpo(rs.getString("code_postal"));
                 article.getPickUp().setVille(rs.getString("ville"));

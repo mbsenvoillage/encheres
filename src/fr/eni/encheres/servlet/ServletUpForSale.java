@@ -26,6 +26,13 @@ import java.util.Map;
 public class ServletUpForSale extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         SaleManager saleManager = new SaleManager();
         articleBean article = new articleBean();
         List<Integer> errorList = new ArrayList<>();
@@ -34,7 +41,7 @@ public class ServletUpForSale extends HttpServlet {
 
         // On récupère les infos de l'utilisateur courant par l'attribut de session user
 
-        HttpSession session = request.getSession();
+
         userBean user = new userBean();
         user = (userBean) session.getAttribute("user");
 
@@ -48,7 +55,6 @@ public class ServletUpForSale extends HttpServlet {
         article.setArtName(request.getParameter("article"));
         article.setArtDescrip(request.getParameter("description"));
         article.setCategory(new Category(request.getParameter("categorie")));
-        System.out.println("This is the cat name : " + request.getParameter("categorie"));
 
 
         // Si aucun prix n'a été renseigné, une exception est levée
@@ -75,28 +81,63 @@ public class ServletUpForSale extends HttpServlet {
 
         if (errorList.size() > 0) {
             request.setAttribute("errorList", errorList);
-            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
-            rd.forward(request, response);
+
+        } else {
+            article.setPickUp(new PickUp(request.getParameter("rue"), request.getParameter("cpo"), request.getParameter("ville")));
+
+
+            if (request.getParameter("modif") != null && request.getParameter("modif").equals("true")) {
+
+                article.getPickUp().setArtNb(Integer.parseInt(request.getParameter("artnb")));
+
+                try {
+
+                    if (request.getParameter("status").equals("CR")) {
+                        article.setArtNb(Integer.parseInt(request.getParameter("artnb")));
+                        saleManager.updateArticleForSale(parametres, article, user);
+                        saleManager.updatePickUpAddress(article.getPickUp(), article.getArtNb());
+                        request.setAttribute("article", article);
+                        boolean modified = true;
+                        request.setAttribute("modified", modified);
+                    } else {
+                        errorList.add(CodesErreurServlet.MODIFICATION_IMPOSSIBLE);
+                    }
+
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                    errorList.add(CodesErreurServlet.MODIFICATION_IMPOSSIBLE);
+                    request.setAttribute("errorList", e.getErrorList());
+                }
+
+            } else {
+                try {
+                    saleManager.addArticleForSale(parametres, article, user);
+                    saleManager.addPickUpAddress(article.getPickUp(), article.getArtNb());
+                    request.setAttribute("article", article);
+                    boolean added = true;
+                    request.setAttribute("added", added);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                    request.setAttribute("errorList", e.getErrorList());
+
+                }
+            }
         }
 
-        article.setPickUp(new PickUp(request.getParameter("rue"), request.getParameter("cpo"), request.getParameter("ville")));
-
-
-        try {
-            saleManager.addArticleForSale(parametres, article, user);
-            saleManager.addPickUpAddress(article.getPickUp(), article.getArtNb());
-            request.setAttribute("article", article);
-            boolean added = true;
-            request.setAttribute("added", added);
-            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
-            rd.forward(request, response);
-        } catch (BusinessException e) {
-            e.printStackTrace();
-            request.setAttribute("errorList", e.getErrorList());
-            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
-            rd.forward(request, response);
+        if (errorList.size() > 0) {
+            try {
+                System.out.println("We're here to get the article info ");
+                article = saleManager.auctionDetail(Integer.parseInt(request.getParameter("artnb")));
+                request.setAttribute("article", article);
+                boolean failedmodif = true;
+                request.setAttribute("failedmodif", failedmodif);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+            }
         }
 
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
+        rd.forward(request, response);
 
     }
 
@@ -109,6 +150,26 @@ public class ServletUpForSale extends HttpServlet {
         if (user == null) {
             response.sendRedirect(request.getContextPath()+"/signup");
         } else {
+
+            if (request.getParameter("modif").equals("true")) {
+                SaleManager saleManager = new SaleManager();
+
+                System.out.println("I'm in the right place");
+
+                try {
+                    articleBean article = saleManager.auctionDetail(Integer.parseInt(request.getParameter("artnb")));
+                    boolean added = true;
+                    boolean tobemodified = true;
+                    request.setAttribute("added", added);
+                    request.setAttribute("tobemodified", tobemodified);
+                    request.setAttribute("article", article);
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
             rd.forward(request, response);
         }

@@ -23,28 +23,29 @@
 
         <main>
 
+
             <div class="container">
                 <h3 class="text-center">Nouvelle vente</h3>
 
-                <form id="saleform" action="${pageContext.request.contextPath}/nouvellevente" method="post">
+                <form id="saleform"  action="${pageContext.request.contextPath}/nouvellevente<c:if test="${added || modified || failedmodif}">?modif=true&status=${article.getSaleStatus()}&artnb=${article.getArtNb()}</c:if>" method="post">
                     <div class="form-group">
                         <label for="article">Article</label>
-                        <input type="text" name="article" class="form-control" id="article" <c:if test="${added}">value="${article.getArtName()}"</c:if>>
+                        <input type="text" name="article" class="form-control" id="article" <c:if test="${added || modified || failedmodif}">value="${article.getArtName()}"</c:if>>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" ><c:if test="${added}">${article.getArtDescrip()}</c:if></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3" ><c:if test="${added || modified || failedmodif}">${article.getArtDescrip()}</c:if></textarea>
                     </div>
                     <div class="form-group">
                         <label for="categorie"> Catégorie</label>
                         <select class="form-control" name="categorie" id="categorie">
-                            <option value="Informatique" <c:if test="${added}"><c:if test="${article.getArtName() == 'Informatique'}">selected</c:if></c:if> >Informatique</option>
+                            <option value="Informatique" <c:if test="${added || modified || failedmodif}"><c:if test="${article.getCategory().getCatName() == 'Informatique'}">selected</c:if></c:if> >Informatique</option>
 
-                            <option value="Ameublement" <c:if test="${added}"><c:if test="${article.getArtName() == 'Ameublement'}">selected</c:if></c:if> >Ameublement</option>
+                            <option value="Ameublement" <c:if test="${added || modified || failedmodif}"><c:if test="${article.getCategory().getCatName() == 'Ameublement'}">selected</c:if></c:if> >Ameublement</option>
 
-                            <option value="Vêtements" <c:if test="${added}"><c:if test="${article.getArtName() == 'Vêtements'}">selected</c:if></c:if> >Vêtement</option>
+                            <option value="Vêtements" <c:if test="${added || modified || failedmodif}"><c:if test="${article.getCategory().getCatName() == 'Vêtements'}">selected</c:if></c:if> >Vêtement</option>
 
-                            <option value="Sport&Loisirs" <c:if test="${added}"><c:if test="${article.getArtName() == 'Sport&Loisirs'}">selected</c:if></c:if> >Sport&Loisir</option>
+                            <option value="Sport&Loisirs" <c:if test="${added || modified || failedmodif}"><c:if test="${article.getCategory().getCatName() == 'Sport&Loisirs'}">selected</c:if></c:if> >Sport&Loisir</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -53,35 +54,43 @@
                     </div>
                     <div class="form-group">
                         <label for="prix">Points:</label>
-                        <input class="form-control" type="number" id="prix" name="prix" step="10" min="0" <c:if test="${added}">value="${article.getStartPrice()}"</c:if> >
+                        <input class="form-control" type="number" id="prix" name="prix" step="10" min="0" <c:if test="${added || modified || failedmodif}">value="${article.getStartPrice()}"</c:if> >
 
                     </div>
                     <div class="form-group">
                         <label for="salestart">Début de l'enchère</label>
-                        <input class="form-control" type="datetime-local" id="salestart" name="salestart" <c:if test="${added}">value="${article.getStartAuc()}"</c:if>>
+                        <input class="form-control" type="datetime-local" id="salestart" name="salestart" <c:if test="${added || modified || failedmodif}">value="${article.getStartAuc()}"</c:if>>
                     </div>
                     <div class="form-group">
                         <label for="saleend">Fin de l'enchère</label>
-                        <input class="form-control" type="datetime-local" name="saleend" id="saleend" <c:if test="${added}">value="${article.getEndAuc()}"</c:if>>
+                        <input class="form-control" type="datetime-local" name="saleend" id="saleend" <c:if test="${added || modified || failedmodif}">value="${article.getEndAuc()}"</c:if>>
                     </div>
                     <fieldset class="form-group">
                         <legend>Retrait</legend>
                         <div class="form-group">
                             <label for="rue">Rue</label>
-                            <input class="form-control" id="rue" type="text" name="rue" value="${user.getRue()}" <c:if test="${added}">value="${article.getPickUp().getRue()}"</c:if>>
+                            <input class="form-control" id="rue" type="text" name="rue" value="${user.getRue()}" <c:if test="${added || modified || failedmodif}">value="${article.getPickUp().getRue()}"</c:if>>
                         </div>
                         <div class="form-group">
                             <label for="cpo">Code postal</label>
-                            <input class="form-control" id="cpo" type="text" name="cpo" value="${user.getCpo()}" <c:if test="${added}">value="${article.getPickUp().getCpo()}"</c:if>>
+                            <input class="form-control" id="cpo" type="text" name="cpo" value="${user.getCpo()}" <c:if test="${added || modified || failedmodif}">value="${article.getPickUp().getCpo()}"</c:if>>
                         </div>
                         <div class="form-group">
                             <label for="ville">Ville</label>
-                            <input class="form-control" id="ville" type="text" name="ville" value="${user.getVille()}" <c:if test="${added}">value="${article.getPickUp().getVille()}"</c:if>>
+                            <input class="form-control" id="ville" type="text" name="ville" value="${user.getVille()}" <c:if test="${added || modified || failedmodif}">value="${article.getPickUp().getVille()}"</c:if>>
                         </div>
                     </fieldset>
                     <div class="form-row " >
                         <div class="col-sm-12 col-md-6 col-lg-6 btn-modifier">
-                            <input class="form-control" type="submit" value="Enregistrer">
+                            <c:choose>
+                                <c:when test="${added || modified || failedmodif}">
+                                    <input class="form-control btn btn-lg btn-primary btn-block" type="submit" value="Modifier">
+                                </c:when>
+                                <c:otherwise>
+                                    <input class="form-control btn btn-lg btn-primary btn-block" type="submit" value="Enregistrer">
+                                </c:otherwise>
+                            </c:choose>
+
                         </div>
                     </div>
                 </form>
@@ -89,7 +98,7 @@
                 <div class="form-row">
                     <div class="col-sm-12 col-md-6 col-lg-6 btn-supprimer">
                         <form action="${pageContext.request.contextPath}/" method="get">
-                            <input class="form-control" type="submit" name="deletebtn" value="Annuler">
+                            <input class="form-control btn btn-lg btn-primary btn-block" type="submit" name="deletebtn" value="Annuler">
                         </form>
                     </div>
                 </div>
@@ -101,10 +110,16 @@
                             </form>
                         </div>
                     </div>
-
-                    <p class="text-center">L'annonce a bien été ajoutée.</p>
-
+                    <c:if test="${!tobemodified}">
+                        <p class="text-center">L'annonce a bien été ajoutée.</p>
+                    </c:if>
                 </c:if>
+                <div class="col-sm-4 offset-sm-4 text-center signin">
+                    <c:if test="${modified}">
+                        <p class="text_center">L'annonce a bien été modifiée</p>
+                    </c:if>
+                </div>
+
 
                 <%
                     List<Integer> errorList = (List<Integer>) request.getAttribute("errorList");

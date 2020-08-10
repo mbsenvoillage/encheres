@@ -11,6 +11,7 @@ public abstract class CodesErreurServlet {
     public static final int ERREUR_FORMAT_PRIX = 30001;
     public static final int MONTANT_INSUFFISANT = 30002;
     public static final int FONDS_INSUFFISANTS = 30003;
+    public static final int MODIFICATION_IMPOSSIBLE = 30004;
 
 
     // TODO clean the error codes up

@@ -5,6 +5,7 @@ public class PickUp {
     private String rue;
     private String cpo;
     private String ville;
+    private int artNb;
 
     // CONSTRUCTORS
 
@@ -46,5 +47,11 @@ public class PickUp {
         return rue + "\n" + "\t" + cpo + " " + ville;
     }
 
+    public int getArtNb() {
+        return artNb;
+    }
 
+    public void setArtNb(int artNb) {
+        this.artNb = artNb;
+    }
 }

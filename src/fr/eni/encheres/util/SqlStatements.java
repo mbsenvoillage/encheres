@@ -29,12 +29,12 @@ public abstract class SqlStatements {
 
     public static String CHECK_USER_CREDIT = "select credit from UTILISATEURS where no_utilisateur = ?";
 
-    public static String SELECT_AUCTION_DETAIL = "select a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo as 'seller', a.etat_vente, a.no_article, u.telephone from ARTICLES_VENDUS a\n" +
+    public static String SELECT_AUCTION_DETAIL = "select a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo as 'seller', a.etat_vente, a.no_article, u.telephone from ARTICLES_VENDUS a\n" +
             "left join utilisateurs u on a.no_utilisateur = u.no_utilisateur\n" +
             "left join CATEGORIES C on C.no_categorie = a.no_categorie\n" +
             "left join RETRAITS R on a.no_article = R.no_article\n" +
             "where a.no_article = ?\n" +
-            "group by a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo, a.etat_vente, a.no_article, u.telephone";
+            "group by a.nom_article, a.description, c.libelle, a.prix_vente, a.prix_initial, a.date_debut_encheres, a.date_fin_encheres, r.rue, r.code_postal, r.ville, u.pseudo, a.etat_vente, a.no_article, u.telephone";
 
     public static String SELECT_HIGHEST_BIDDER = "select e.montant_enchere as 'highest bid', e.no_utilisateur, u.pseudo as 'buyer', e.date_enchere from ARTICLES_VENDUS a\n" +
             "inner join ENCHERES E on a.no_article = E.no_article\n" +
@@ -67,4 +67,10 @@ public abstract class SqlStatements {
     public static String INSERT_NEW_AUTH_TOKEN = "insert into utilisateur_auth (selector, validator, no_utilisateur) values (?, ?, ?)";
 
     public static String DELETE_AUTH_TOKEN_BY_ID = "delete from utilisateur_auth where id = ?";
+
+    public static String UPDATE_ARTICLE = "update articles_vendus set nom_article = ?, description = ?, date_debut_encheres = ?, date_fin_encheres = ?, prix_initial = ?, prix_vente = ?, no_categorie = ?, etat_vente = ?, where no_article = ?";
+
+    public static String UPDATE_PICKUP_DETAIL = "update RETRAITS set no_article = ?, rue = ?, code_postal = ?, ville = ? where no_article = ?";
+
+
 }

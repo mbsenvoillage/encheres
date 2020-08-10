@@ -78,7 +78,39 @@ public class SaleManager {
         return articleforSale.selectUserWinningBids(userNb, name, cat);
     }
 
+    // PERMET DE MODIFIER LES DETAILS D'UN ARTICLE
+
+    public void updateArticleForSale(Map parametres, articleBean article, userBean user) throws BusinessException {
+        BusinessException bizEx = new BusinessException();
+
+        // Tous les champs ont-ils été remplis ?
+
+        this.allFieldsAreFilled(parametres, bizEx);
+
+        // Les dates sont-elles valides d'un point de vue logique ?
+
+        this.dateIsValid(article.getStartAuc(), article.getEndAuc(), bizEx);
+
+        // La description contient-elle moins de 300 caractères ?
+
+        this.wordCount(article.getArtDescrip(), bizEx);
+
+        // On affecte au champ no_categorie la valeur correspondante
+
+        article.getCategory().setCatNb(getCatId(article.getCategory().getCatName()));
+        System.out.println("THIS is the cat nb" + article.getCategory().getCatNb());
+
+        // Si les tests ci-dessus n'ont levé aucune erreur, on procède à l'ajout de l'annonce
+
+        if (!bizEx.containsErrors()) {
+            articleforSale.updateArticle(article, user);
+        } else {
+            throw bizEx;
+        }
+    }
+
     // PERMET D'ajouter un article à vendre
+
     public articleBean addArticleForSale(Map parametres, articleBean article, userBean user) throws BusinessException {
         BusinessException bizEx = new BusinessException();
 
@@ -108,6 +140,12 @@ public class SaleManager {
         }
 
         return article;
+    }
+
+    //PERMET DE MODIFIER UNE ADRESSE DE RETRAIT
+
+    public void updatePickUpAddress(PickUp retrait, int artNb) throws BusinessException {
+        articleforSale.updateRetrait(retrait, artNb);
     }
 
     // PERMET D'AJOUTER UNE ADDRESSE DE RETRAIT SUITE A UN DEPOS D'ANNONCE
