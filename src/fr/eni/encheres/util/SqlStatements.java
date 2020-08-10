@@ -72,5 +72,7 @@ public abstract class SqlStatements {
 
     public static String UPDATE_PICKUP_DETAIL = "update RETRAITS set no_article = ?, rue = ?, code_postal = ?, ville = ? where no_article = ?";
 
+    public static String DELETE_ARTICLE = "delete from articles_vendus where no_article = ?";
+
 
 }

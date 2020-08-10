@@ -18,6 +18,12 @@ public class SaleManager {
 
     public SaleManager() { this.articleforSale = DAOFactory.getSaleDAO(); }
 
+    // PERMET DE SUPPRIMER UN ARTICLE DONT LA VENTE N'A PAS DÉBUTÉ
+
+    public void deleteArticle(int artNb) throws BusinessException {
+        articleforSale.deleteArticle(artNb);
+    }
+
     // PERMET DE METTRE A JOUR LE STATUT DE VENTE
 
     public void updateSaleStatus() throws BusinessException {

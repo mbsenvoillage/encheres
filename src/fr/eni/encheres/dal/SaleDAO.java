@@ -36,4 +36,6 @@ public interface SaleDAO {
     public articleBean updateArticle(articleBean article, userBean user) throws BusinessException;
 
     public void updateRetrait(PickUp retrait, int artNb) throws BusinessException;
+
+    public void deleteArticle(int artNb) throws BusinessException;
 }

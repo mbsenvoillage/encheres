@@ -717,6 +717,41 @@ public class SaleDAOJdbcImpl implements SaleDAO {
         return article;
     }
 
+    // PERMET DE SUPPRIMER UN ARTICLE DONT LA VENTE N'A PAS DÉBUTÉ
+
+    public void deleteArticle(int artNb) throws BusinessException {
+        // tente d'ouvrir une connection à la BDD
+        try(Connection cnx = ConnectionWizard.getConnection()) {
+
+            try {
+                cnx.setAutoCommit(false);
+
+                // assigne la requête sql au preparedstatement
+                PreparedStatement stmt = cnx.prepareStatement(SqlStatements.DELETE_ARTICLE);
+
+                // Remplit les placeholders avec les infos passées param dans le formulaire de signup
+                stmt.setInt(1, artNb);
+
+                // Envoie la requête
+                stmt.executeUpdate();
+
+                stmt.close();
+                cnx.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                cnx.rollback();
+                throw e;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            BusinessException bizEx = new BusinessException();
+            bizEx.addError(CodesErreurDAL.ECHEC_DELETE_OBJECT);
+            throw bizEx;
+        }
+    }
+
+
     // PERMET DE DETERMINER LE NO D'UNE CATEGORIE A PARTIR DE SON NOM
 
     public int selectCatByName(String cat) throws BusinessException {

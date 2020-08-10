@@ -37,6 +37,20 @@ public class ServletUpForSale extends HttpServlet {
         articleBean article = new articleBean();
         List<Integer> errorList = new ArrayList<>();
 
+        if (request.getParameter("delete") != null && request.getParameter("delete").equals("true")) {
+            try {
+                saleManager.deleteArticle(Integer.parseInt(request.getParameter("artnb")));
+                boolean deleted = true;
+                request.setAttribute("deleted", deleted);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+                request.setAttribute("errorList", e.getErrorList());
+            }
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/forsale.jsp");
+            rd.forward(request, response);
+            return;
+        }
+
         request.setCharacterEncoding("UTF-8");
 
         // On récupère les infos de l'utilisateur courant par l'attribut de session user
@@ -151,7 +165,7 @@ public class ServletUpForSale extends HttpServlet {
             response.sendRedirect(request.getContextPath()+"/signup");
         } else {
 
-            if (request.getParameter("modif").equals("true")) {
+            if (request.getParameter("modif") != null && request.getParameter("modif").equals("true")) {
                 SaleManager saleManager = new SaleManager();
 
                 System.out.println("I'm in the right place");

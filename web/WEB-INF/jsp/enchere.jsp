@@ -64,7 +64,7 @@
             </div>
             <div class="form-row" >
                 <div class="col-sm-4 offset-sm-4 text-center">
-                    <c:if test="${article.getSaleStatus() == 'EC'}">
+                    <c:if test="${article.getSaleStatus() == 'EC' && !user.getPseudo().equals(article.getSeller().getPseudo())}">
                         <form action="${pageContext.request.contextPath}/enchere" method="post">
                             <div class="form-group">
                                     <label for="prix">Ma proposition</label>

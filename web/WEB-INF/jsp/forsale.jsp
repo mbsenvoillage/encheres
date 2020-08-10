@@ -27,6 +27,8 @@
             <div class="container">
                 <h3 class="text-center">Nouvelle vente</h3>
 
+                <c:if test="${deleted}"><p class="text-center">Votre article a été supprimé</p></c:if>
+
                 <form id="saleform"  action="${pageContext.request.contextPath}/nouvellevente<c:if test="${added || modified || failedmodif}">?modif=true&status=${article.getSaleStatus()}&artnb=${article.getArtNb()}</c:if>" method="post">
                     <div class="form-group">
                         <label for="article">Article</label>
@@ -105,8 +107,8 @@
                 <c:if test="${added}">
                     <div class="form-row">
                         <div class="col-sm-12 col-md-6 col-lg-6 btn-supprimer">
-                            <form action="${pageContext.request.contextPath}/" method="get">
-                                <input class="form-control" type="submit" name="deletebtn" value="Annuler la vente">
+                            <form action="${pageContext.request.contextPath}/nouvellevente?delete=true&artnb=${article.getArtNb()}" method="post">
+                                <input class="form-control btn btn-lg btn-primary btn-block" type="submit" name="deletebtn" value="Annuler la vente">
                             </form>
                         </div>
                     </div>
